@@ -8,8 +8,11 @@
 **Free, Open-Source AI Video Dubbing & Voice Translation Platform** — Powered by Google Gemini, Microsoft Edge-TTS, and Acoustic Vocal Isolation. Built for **Idealabs Digital**.
 
 > ⚠️ **Project Status Note**: **Edge-TTS** is 100% fully functional, battle-tested, and recommended for production use. Secondary engines (**F5-TTS** and custom voice cloning models) are currently under active experimental development as the project is continuously updating.
+>
+> link working - https://autodub-pro.onrender.com/
 
 ---
+
 
 ## 🌟 Key Highlights & Major Fixes
 
