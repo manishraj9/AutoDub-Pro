@@ -1,30 +1,62 @@
-FROM python:3.11-slim
+# ============================================================
+# Stage 1: Build bgutil PO-token server
+# ============================================================
+FROM node:25-bookworm-slim AS bgutil-build
 
-# System dependencies
+WORKDIR /opt/bgutil
+
+COPY bgutil-ytdlp-pot-provider/server/package.json .
+COPY bgutil-ytdlp-pot-provider/server/package-lock.json .
+
+RUN npm ci --no-audit --no-fund
+
+COPY bgutil-ytdlp-pot-provider/server/types ./types
+COPY bgutil-ytdlp-pot-provider/server/tsconfig.json .
+COPY bgutil-ytdlp-pot-provider/server/src ./src
+
+RUN npx tsc
+
+
+# ============================================================
+# Stage 2: AutoDub-Pro
+# ============================================================
+FROM node:25-bookworm-slim
+
+# Python + FFmpeg + build dependencies
 RUN apt-get update && apt-get install -y \
-    curl \
+    python3 \
+    python3-pip \
+    python3-venv \
     ffmpeg \
     gcc \
     g++ \
     libsndfile1 \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Deno for yt-dlp YouTube JavaScript challenges
+# Install Deno
 RUN curl -fsSL https://deno.land/install.sh | sh
 
 ENV PATH="/root/.deno/bin:${PATH}"
 
 WORKDIR /app
 
-# Install Python dependencies
+# Python virtual environment
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:${PATH}"
+
+# Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application
+# Application
 COPY . .
+
+# Compiled bgutil server
+COPY --from=bgutil-build /opt/bgutil/build /opt/bgutil/build
 
 ENV PORT=8000
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "python main.py --web --port $PORT"]
+CMD ["sh", "./start.sh"]
