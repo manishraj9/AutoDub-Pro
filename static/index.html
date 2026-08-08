@@ -1,0 +1,2150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Automated Video Dubbing Dashboard</title>
+    <meta name="description" content="Next-generation Gemini-powered video translation, speaker diarization & voice cloning platform">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="background-decor blur-1"></div>
+    <div class="background-decor blur-2"></div>
+
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-main">
+                <div class="logo">
+                    <i class="fa-solid fa-microphone-lines logo-icon"></i>
+                    <h1>Idealabs Dubber <span>PRO</span></h1>
+                </div>
+                <div class="system-stats">
+                    <span class="stat-badge" id="latency-badge"><i class="fa-solid fa-network-wired"></i> Latency: checking...</span>
+                    <span class="stat-badge" id="cache-badge"><i class="fa-solid fa-database"></i> Cache: checking...</span>
+                    <select id="accent-color-select" class="btn-small" style="background: rgba(255,255,255,0.05); color: var(--text-primary); border: 1px solid var(--border-color); outline: none; padding: 0.3rem 0.5rem; border-radius: 20px; font-size: 0.78rem;">
+                        <option value="purple">Purple Theme</option>
+                        <option value="indigo">Indigo Theme</option>
+                        <option value="emerald">Emerald Theme</option>
+                        <option value="rose">Rose Theme</option>
+                        <option value="amber">Amber Theme</option>
+                    </select>
+                    <button class="btn-small" id="btn-theme-toggle" title="Toggle Light/Dark Theme"><i class="fa-solid fa-moon"></i> Theme</button>
+                    <button class="btn-small" id="btn-clear-cache-top" title="Clear Cache"><i class="fa-solid fa-trash-can"></i> Clear Cache</button>
+                    <button class="btn-small" id="btn-test-keys-top" title="Test Gemini Keys"><i class="fa-solid fa-key"></i> Test Keys</button>
+                </div>
+            </div>
+            <p class="subtitle">Next-generation Gemini-powered video translation, speaker diarization & voice cloning platform</p>
+        </header>
+
+        <!-- System Alerts Modal -->
+        <div id="status-modal" class="modal hidden">
+            <div class="modal-content glass-card animate-zoom">
+                <div class="modal-header">
+                    <h3 id="modal-title">System Status</h3>
+                    <span class="close-btn" id="modal-close-btn">&times;</span>
+                </div>
+                <div class="modal-body" id="modal-body-content">
+                    Testing Gemini keys validity...
+                </div>
+            </div>
+        </div>
+
+        <!-- Keyboard Shortcuts Modal -->
+        <div id="shortcuts-modal" class="modal hidden">
+            <div class="modal-content glass-card animate-zoom" style="max-width: 480px;">
+                <div class="modal-header">
+                    <h3>⌨️ Keyboard Shortcuts</h3>
+                    <span class="close-btn" id="shortcuts-close-btn">&times;</span>
+                </div>
+                <div class="modal-body" style="font-size: 13px; line-height: 2;">
+                    <div><kbd>Ctrl</kbd> + <kbd>Enter</kbd> — Submit / Generate Dubbed Video</div>
+                    <div><kbd>Ctrl</kbd> + <kbd>S</kbd> — Export Script JSON</div>
+                    <div><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> — Auto-save Draft</div>
+                    <div><kbd>Escape</kbd> — Close Modals</div>
+                    <div><kbd>Ctrl</kbd> + <kbd>F</kbd> — Focus Find & Replace</div>
+                    <div><kbd>F11</kbd> — Toggle Fullscreen Editor</div>
+                    <div><kbd>Ctrl</kbd> + <kbd>/</kbd> — Show Keyboard Shortcuts</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Session History Modal -->
+        <div id="history-modal" class="modal hidden">
+            <div class="modal-content glass-card animate-zoom" style="max-width: 600px;">
+                <div class="modal-header">
+                    <h3>📂 Session History</h3>
+                    <span class="close-btn" id="history-close-btn">&times;</span>
+                </div>
+                <div class="modal-body" id="history-body">
+                    <p style="color: var(--text-secondary);">No previous sessions found.</p>
+                </div>
+            </div>
+        </div>
+
+        <main class="app-main">
+            <!-- Left Panel: Configurations -->
+            <section class="panel config-panel">
+                <div class="card glass-card">
+                    <h2><i class="fa-solid fa-sliders icon"></i> 1. Setup & Configure</h2>
+                    
+                    <div class="form-group">
+                        <label for="youtube-url">YouTube URL</label>
+                        <div class="input-with-icon">
+                            <i class="fa-brands fa-youtube input-icon"></i>
+                            <input type="text" id="youtube-url" placeholder="https://www.youtube.com/watch?v=..." value="">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="transcription-model">Gemini Model</label>
+                            <select id="transcription-model">
+                                <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite (500 RPD)</option>
+                                <option value="gemini-3.5-flash">Gemini 3.5 Flash (20 RPD)</option>
+                                <option value="gemini-2.5-flash">Gemini 2.5 Flash (20 RPD)</option>
+                                <option value="gemini-3-flash">Gemini 3 Flash (20 RPD)</option>
+                            </select>
+                        </div>
+                        <div class="form-group half">
+                            <label for="target-language">Target Language</label>
+                            <select id="target-language">
+                                <option value="English">🇺🇸 English</option>
+                                <option value="Hindi">🇮🇳 Hindi</option>
+                                <option value="Tamil">🇮🇳 Tamil</option>
+                                <option value="Bengali">🇮🇳 Bengali</option>
+                                <option value="Spanish">🇪🇸 Spanish</option>
+                                <option value="French">🇫🇷 French</option>
+                                <option value="German">🇩🇪 German</option>
+                                <option value="Japanese">🇯🇵 Japanese</option>
+                                <option value="Korean">🇰🇷 Korean</option>
+                                <option value="Portuguese">🇧🇷 Portuguese</option>
+                                <option value="Arabic">🇸🇦 Arabic</option>
+                                <option value="Russian">🇷🇺 Russian</option>
+                                <option value="Chinese">🇨🇳 Chinese</option>
+                                <option value="Italian">🇮🇹 Italian</option>
+                                <option value="Turkish">🇹🇷 Turkish</option>
+                                <option value="Indonesian">🇮🇩 Indonesian</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="tts-engine">Speech Engine</label>
+                            <select id="tts-engine">
+                                <option value="edge-tts">Edge-TTS (Free, Multi-Voice)</option>
+                                <option value="elevenlabs">ElevenLabs (Voice Cloning)</option>
+                                <option value="f5-tts">F5-TTS (Voice Cloning via Kaggle/Local)</option>
+                            </select>
+                        </div>
+                        <div class="form-group half">
+                            <label for="download-quality"><i class="fa-solid fa-film"></i> Video Download Quality</label>
+                            <select id="download-quality">
+                                <option value="1080p">1080p Full HD (Recommended)</option>
+                                <option value="4k">4K / 2160p Ultra HD</option>
+                                <option value="720p">720p HD</option>
+                                <option value="480p">480p SD</option>
+                                <option value="360p">360p Fast</option>
+                                <option value="audio">Audio Only (WAV/MP3)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="dubbing-mode">Dubbing Mode</label>
+                            <select id="dubbing-mode">
+                                <option value="duck">Ducked Bg (Voice-over & BGM)</option>
+                                <option value="replace">Complete Vocal Replacement</option>
+                            </select>
+                        </div>
+                        <div class="form-group half">
+                            <label for="render-preset"><i class="fa-solid fa-wand-magic-sparkles"></i> Render Preset</label>
+                            <select id="render-preset">
+                                <option value="pro">Pro HD (Best Quality)</option>
+                                <option value="fast">Fast Web Stream</option>
+                                <option value="burn">Subtitled Studio</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Gemini API Cost Estimator Badge -->
+                    <div class="form-group" style="margin-top: -5px; margin-bottom: 10px;">
+                        <span class="stat-badge" id="cost-estimator" style="border: 1px dashed var(--accent-success); color: var(--accent-success); background-color: rgba(16, 185, 129, 0.05); font-weight: 600; width: fit-content; display: none;">
+                            <i class="fa-solid fa-coins"></i> Estimated API Cost: $0.00
+                        </span>
+                    </div>
+
+                    <div class="form-group hidden" id="eleven-key-group">
+                        <label for="eleven-api-key">ElevenLabs API Key</label>
+                        <div class="input-with-icon">
+                            <i class="fa-solid fa-key input-icon"></i>
+                            <input type="password" id="eleven-api-key" placeholder="Enter ElevenLabs API Key...">
+                        </div>
+                        <small class="help-text">Required for Instant Voice Cloning (Free tier available).</small>
+                    </div>
+
+                    <div class="form-group hidden" id="f5-tts-url-group">
+                        <label for="f5-tts-url">F5-TTS Server URL</label>
+                        <div class="input-with-icon">
+                            <i class="fa-solid fa-server input-icon"></i>
+                            <input type="text" id="f5-tts-url" placeholder="http://127.0.0.1:8000 or Pinggy tunnel URL...">
+                        </div>
+                        <small class="help-text">The API URL of the F5-TTS FastAPI server running on Kaggle GPU.</small>
+                    </div>
+
+                    <!-- TTS & Background Volume Controls -->
+                    <div class="form-group" id="volume-controls-group">
+                        <label><i class="fa-solid fa-volume-high"></i> Volume Mixing Controls</label>
+                        <div class="eq-grid" style="gap: 12px;">
+                            <div class="eq-slider-group">
+                                <label for="tts-volume" style="font-size: 11px;">TTS Voice Volume</label>
+                                <input type="range" id="tts-volume" min="-10" max="10" step="1" value="0">
+                                <span id="tts-volume-val">0 dB</span>
+                            </div>
+                            <div class="eq-slider-group">
+                                <label for="bg-volume" style="font-size: 11px;">Background Music Volume</label>
+                                <input type="range" id="bg-volume" min="-10" max="10" step="1" value="0">
+                                <span id="bg-volume-val">0 dB</span>
+                            </div>
+                        </div>
+                        <small class="help-text">Adjust dubbed TTS voice and background music volumes independently.</small>
+                    </div>
+
+                    <div class="form-group" id="duck-settings-group">
+                        <label for="duck-level">Background Duck Level (dB)</label>
+                        <div class="range-container">
+                            <input type="range" id="duck-level" min="-40" max="-5" value="-20">
+                            <span id="duck-level-value">-20 dB</span>
+                        </div>
+                        <small class="help-text">Controls background music volume when speech occurs.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="output-name">Output File Name</label>
+                        <input type="text" id="output-name" value="dubbed_output.mp4">
+                    </div>
+
+                    <!-- Collapsible Advanced Settings -->
+                    <div class="advanced-dropdown">
+                        <button class="dropdown-trigger" id="btn-toggle-advanced" type="button">
+                            <span><i class="fa-solid fa-circle-nodes"></i> Advanced Audio & Subtitle EQ</span>
+                            <i class="fa-solid fa-chevron-down arrow-icon" id="advanced-arrow"></i>
+                        </button>
+                        
+                        <div class="dropdown-content hidden" id="advanced-content">
+                            <!-- 3-Band EQ Sliders -->
+                            <div class="eq-container">
+                                <h4>3-Band Parametric Equalizer</h4>
+                                <div class="eq-grid">
+                                    <div class="eq-slider-group">
+                                        <label for="eq-low">Bass</label>
+                                        <input type="range" id="eq-low" min="-12" max="12" step="1" value="0">
+                                        <span id="eq-low-val">0 dB</span>
+                                    </div>
+                                    <div class="eq-slider-group">
+                                        <label for="eq-mid">Mid</label>
+                                        <input type="range" id="eq-mid" min="-12" max="12" step="1" value="0">
+                                        <span id="eq-mid-val">0 dB</span>
+                                    </div>
+                                    <div class="eq-slider-group">
+                                        <label for="eq-high">Treble</label>
+                                        <input type="range" id="eq-high" min="-12" max="12" step="1" value="0">
+                                        <span id="eq-high-val">0 dB</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Noise Gate -->
+                            <div class="form-group margin-top-1">
+                                <label for="noise-gate">Noise Gate Threshold (dBFS)</label>
+                                <div class="range-container">
+                                    <input type="range" id="noise-gate" min="-60" max="-20" step="1" value="-45">
+                                    <span id="noise-gate-val">-45 dBFS</span>
+                                </div>
+                                <small class="help-text">Mutes static noise between speaker turns.</small>
+                            </div>
+
+                            <!-- Subtitles & Compression Toggles -->
+                            <div class="form-group margin-top-1">
+                                <label>Features & Optimization</label>
+                                <div class="checkbox-row">
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" id="chk-use-cache" checked>
+                                        <span class="checkmark"></span>
+                                        Enable Translation Cache
+                                    </label>
+                                </div>
+                                <div class="checkbox-row margin-top-05">
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" id="chk-burn-subs">
+                                        <span class="checkmark"></span>
+                                        Burn Subtitles Into Video
+                                    </label>
+                                </div>
+                                <div class="checkbox-row margin-top-05">
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" id="chk-waveform">
+                                        <span class="checkmark"></span>
+                                        Animated Waveform Overlay
+                                    </label>
+                                </div>
+                                <div class="checkbox-row margin-top-05">
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" id="chk-compress">
+                                        <span class="checkmark"></span>
+                                        Web Compression (H.264)
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group hidden" id="compress-settings-group">
+                                <label for="crf-slider">Compression Factor (CRF)</label>
+                                <div class="range-container">
+                                    <input type="range" id="crf-slider" min="18" max="28" value="24">
+                                    <span id="crf-val">24</span>
+                                </div>
+                                <small class="help-text">Lower numbers produce higher visual quality (e.g. 18-28).</small>
+                            </div>
+                            
+                            <!-- Subtitles Style Customizer -->
+                            <div class="form-group margin-top-1">
+                                <label>Subtitle Custom Styles</label>
+                                <div class="form-row">
+                                    <div class="form-group half">
+                                        <label for="sub-fontname" style="font-size: 11px;">Font Family</label>
+                                        <select id="sub-fontname" style="padding: 6px 10px; font-size: 12px;">
+                                            <option value="Arial">Arial</option>
+                                            <option value="Helvetica">Helvetica</option>
+                                            <option value="Verdana">Verdana</option>
+                                            <option value="Tahoma">Tahoma</option>
+                                            <option value="Georgia">Georgia</option>
+                                            <option value="Times New Roman">Times New Roman</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group half">
+                                        <label for="sub-fontsize" style="font-size: 11px;">Font Size</label>
+                                        <div class="range-container">
+                                            <input type="range" id="sub-fontsize" min="10" max="40" value="20" style="height: 4px;">
+                                            <span id="sub-fontsize-val" style="min-width: 35px; font-size: 11px;">20px</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row margin-top-05">
+                                    <div class="form-group half">
+                                        <label for="sub-fontcolor" style="font-size: 11px;">Font Color</label>
+                                        <input type="color" id="sub-fontcolor" value="#ffffff" style="width: 100%; height: 32px; border: 1px solid var(--border-color); background: transparent; cursor: pointer; padding: 0;">
+                                    </div>
+                                    <div class="form-group half">
+                                        <label for="sub-outlinecolor" style="font-size: 11px;">Outline Color</label>
+                                        <input type="color" id="sub-outlinecolor" value="#000000" style="width: 100%; height: 32px; border: 1px solid var(--border-color); background: transparent; cursor: pointer; padding: 0;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pronunciation replacement dict -->
+                            <div class="form-group margin-top-1">
+                                <label for="pronunciation-dict">Pronunciation Dictionary</label>
+                                <textarea id="pronunciation-dict" placeholder="Format: word->replacement (one per line, e.g. AI->A.I.)" style="width: 100%; height: 60px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); color: #fff; border-radius: 6px; padding: 0.5rem; font-family: monospace; font-size: 11px; resize: vertical; outline: none;"></textarea>
+                                <small class="help-text">Replace phrases/acronyms before speech synthesis.</small>
+                            </div>
+                            
+                            <!-- Reset Settings Button -->
+                            <button type="button" id="btn-reset-config" class="btn-small" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25); color: #f87171; width: 100%; justify-content: center; padding: 0.6rem; margin-top: 5px;">
+                                <i class="fa-solid fa-arrow-rotate-left"></i> Reset to Defaults
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 8px; margin-top: 1rem;">
+                        <button id="btn-start" class="btn primary-btn" style="flex: 1;">
+                            <span class="btn-text"><i class="fa-solid fa-bolt"></i> Start Processing</span>
+                            <div class="btn-spinner hidden"></div>
+                        </button>
+                        <button id="btn-show-history" class="btn secondary-btn" style="padding: 0.7rem 1rem;" title="Session History">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </button>
+                        <button id="btn-show-shortcuts" class="btn secondary-btn" style="padding: 0.7rem 1rem;" title="Keyboard Shortcuts">
+                            <i class="fa-solid fa-keyboard"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Live Progress Card -->
+                <div class="card glass-card progress-card hidden" id="card-progress">
+                    <h2><i class="fa-solid fa-wave-square icon-pulse"></i> Pipeline Progress</h2>
+                    
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="pipeline-progress-bar" style="width: 0%;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <p class="progress-status" id="pipeline-status-text">Initializing...</p>
+                        <span class="stat-badge" id="eta-badge" style="font-size: 11px; display: none;">
+                            <i class="fa-solid fa-hourglass-half"></i> ETA: calculating...
+                        </span>
+                    </div>
+
+                    <!-- Pipeline Steps -->
+                    <ul class="step-list">
+                        <li id="step-download" class="pending"><i class="fa-solid fa-circle-dot"></i> Download video & audio</li>
+                        <li id="step-transcribe" class="pending"><i class="fa-solid fa-circle-dot"></i> Audio transcription</li>
+                        <li id="step-diarize" class="pending"><i class="fa-solid fa-circle-dot"></i> Speaker separation</li>
+                        <li id="step-translate" class="pending"><i class="fa-solid fa-circle-dot"></i> Segment translation</li>
+                        <li id="step-edit" class="pending"><i class="fa-solid fa-circle-dot"></i> Human verification (Pending)</li>
+                        <li id="step-synthesize" class="pending"><i class="fa-solid fa-circle-dot"></i> Speech synthesis</li>
+                        <li id="step-mux" class="pending"><i class="fa-solid fa-circle-dot"></i> Final video rendering</li>
+                    </ul>
+
+                    <div class="console-box" id="console-logs">
+                        <div class="console-line system-msg">[System] Ready to start pipeline.</div>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 6px; margin-top: 6px;">
+                        <button id="btn-scroll-lock" class="btn-small" style="font-size: 10px; padding: 3px 8px;" title="Toggle auto-scroll">
+                            <i class="fa-solid fa-lock"></i> Auto-scroll
+                        </button>
+                        <button id="btn-clear-console" class="btn-small" style="font-size: 10px; padding: 3px 8px;" title="Clear console">
+                            <i class="fa-solid fa-eraser"></i> Clear
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Editor & Output -->
+            <section class="panel workspace-panel">
+                <!-- Instruction Panel -->
+                <div class="card glass-card welcome-card" id="card-welcome">
+                    <div class="welcome-content">
+                        <i class="fa-solid fa-wand-magic-sparkles welcome-icon"></i>
+                        <h3>Enter a video URL to get started</h3>
+                        <p>The dubber will download the video, transcribe the speech turns, identify the speakers, and translate to your chosen language. You'll be able to review and edit the transcriptions right here before rendering the video.</p>
+                    </div>
+                </div>
+
+                <!-- Editor Card -->
+                <div class="card glass-card editor-card hidden" id="card-editor">
+                    <div class="card-header" style="flex-wrap: wrap; gap: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                            <h2 style="margin: 0;"><i class="fa-solid fa-user-pen icon"></i> 2. Review & Refine</h2>
+                            <span class="stat-badge" id="segment-count-badge" style="font-size: 11px; background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3); color: #a78bfa;">
+                                <i class="fa-solid fa-list-ol"></i> 0 segments
+                            </span>
+                            <span class="stat-badge" id="total-duration-badge" style="font-size: 11px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa;">
+                                <i class="fa-solid fa-clock"></i> 0:00
+                            </span>
+                            <span class="stat-badge" id="word-count-badge" style="font-size: 11px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399;">
+                                <i class="fa-solid fa-font"></i> 0 words
+                            </span>
+                            <span class="stat-badge" id="detected-lang-badge" style="font-size: 11px; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); color: #fbbf24; display: none;">
+                                <i class="fa-solid fa-language"></i> Source: Unknown
+                            </span>
+                        </div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                            <button id="btn-auto-save" class="btn-small" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399; border-radius: 6px; padding: 0.5rem 0.9rem; cursor: pointer; font-size: 0.85rem;" title="Save draft to browser storage"><i class="fa-solid fa-floppy-disk"></i> Save Draft</button>
+                            <button id="btn-restore-draft" class="btn-small" style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); color: #fbbf24; border-radius: 6px; padding: 0.5rem 0.9rem; cursor: pointer; font-size: 0.85rem;" title="Restore last draft"><i class="fa-solid fa-arrow-rotate-left"></i> Restore Draft</button>
+                            <button id="btn-import-script-trigger" class="btn-small" style="background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; border-radius: 6px; padding: 0.5rem 0.9rem; cursor: pointer; font-size: 0.85rem;"><i class="fa-solid fa-file-import"></i> Import JSON</button>
+                             <button id="btn-export-script" class="btn-small" style="background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3); color: #a78bfa; border-radius: 6px; padding: 0.5rem 0.9rem; cursor: pointer; font-size: 0.85rem;"><i class="fa-solid fa-file-export"></i> Export JSON</button>
+                             <button id="btn-export-csv" class="btn-small" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399; border-radius: 6px; padding: 0.5rem 0.9rem; cursor: pointer; font-size: 0.85rem;"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+                             <button id="btn-fullscreen-editor" class="btn-small" style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.2); color: #a78bfa; border-radius: 6px; padding: 0.5rem 0.9rem; cursor: pointer; font-size: 0.85rem;" title="Toggle Fullscreen Editor"><i class="fa-solid fa-expand"></i></button>
+                             <input type="file" id="file-import-script" accept=".json" style="display: none;">
+                            <button id="btn-submit-edits" class="btn success-btn">
+                                <i class="fa-solid fa-circle-check"></i> Generate Dubbed Video
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Video Preview Block -->
+                    <div class="video-preview-block">
+                        <img src="" alt="Thumbnail" id="editor-video-thumbnail">
+                        <div class="video-preview-details">
+                            <h4 id="video-preview-title">Loading YouTube video...</h4>
+                            <p>Translate segments and choose voices for each speaker below.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Voice settings -->
+                    <div class="voice-mappings" id="voice-mapping-area">
+                        <!-- Will be populated dynamically -->
+                    </div>
+                    
+                    <!-- Voice presets manager -->
+                    <div class="voice-presets-container" style="margin-top: 15px; padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);">
+                        <h4 style="margin: 0 0 8px 0; font-size: 13px; font-weight: 600; color: #10b981;"><i class="fa-solid fa-floppy-disk"></i> Voice Presets Manager</h4>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <input type="text" id="preset-name-input" placeholder="Enter preset name..." style="flex: 1; padding: 6px 10px; font-size: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #fff;">
+                            <button id="btn-save-preset" class="btn-small" style="padding: 6px 12px; font-size: 11px; background: #10b981; border: none; border-radius: 4px; color: #fff; cursor: pointer;"><i class="fa-solid fa-download"></i> Save</button>
+                            <button id="btn-load-preset" class="btn-small" style="padding: 6px 12px; font-size: 11px; background: #3b82f6; border: none; border-radius: 4px; color: #fff; cursor: pointer;"><i class="fa-solid fa-upload"></i> Load</button>
+                            <button id="btn-delete-preset" class="btn-small" style="padding: 6px 12px; font-size: 11px; background: #ef4444; border: none; border-radius: 4px; color: #fff; cursor: pointer;"><i class="fa-solid fa-trash-can"></i> Delete</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Batch Operations Bar -->
+                    <div style="display: flex; gap: 8px; margin-top: 15px; margin-bottom: 8px; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); align-items: center; flex-wrap: wrap;">
+                        <label class="checkbox-container" style="font-size: 12px; color: var(--text-secondary); margin: 0; padding-left: 24px; cursor: pointer;">
+                            <input type="checkbox" id="chk-select-all">
+                            <span class="checkmark" style="width: 16px; height: 16px;"></span>
+                            Select All
+                        </label>
+                        <button id="btn-batch-reassign" class="btn-small" style="padding: 5px 10px; font-size: 11px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; border-radius: 4px; cursor: pointer;" title="Reassign selected segments to another speaker"><i class="fa-solid fa-user-tag"></i> Batch Reassign Speaker</button>
+                        <button id="btn-merge-short" class="btn-small" style="padding: 5px 10px; font-size: 11px; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); color: #fbbf24; border-radius: 4px; cursor: pointer;" title="Merge segments shorter than 1 second"><i class="fa-solid fa-compress"></i> Merge Short (<1s)</button>
+                        <button id="btn-split-long" class="btn-small" style="padding: 5px 10px; font-size: 11px; background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3); color: #a78bfa; border-radius: 4px; cursor: pointer;" title="Split segments longer than 15s"><i class="fa-solid fa-scissors"></i> Split Long (>15s)</button>
+                    </div>
+
+                    <!-- Bulk Find and Replace Panel -->
+                    <div class="find-replace-container" style="display: flex; gap: 8px; margin-bottom: 12px; padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); align-items: center; flex-wrap: wrap;">
+                        <span style="font-size: 13px; font-weight: 600; color: var(--text-secondary); display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-magnifying-glass"></i> Find & Replace:</span>
+                        <input type="text" id="find-input" placeholder="Find text..." style="flex: 1; min-width: 150px; padding: 6px 10px; font-size: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #fff;">
+                        <input type="text" id="replace-input" placeholder="Replace with..." style="flex: 1; min-width: 150px; padding: 6px 10px; font-size: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #fff;">
+                        <button id="btn-apply-replace" class="btn-small" style="padding: 6px 12px; font-size: 11px; background: var(--accent-purple); border: none; border-radius: 4px; color: #fff; cursor: pointer;"><i class="fa-solid fa-repeat"></i> Replace All</button>
+                        <button id="btn-bulk-reset" class="btn-small" style="padding: 6px 12px; font-size: 11px; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; border-radius: 4px; cursor: pointer;"><i class="fa-solid fa-trash-arrow-up"></i> Reset All Translations</button>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="editor-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 3%"><input type="checkbox" id="chk-header-select-all" title="Select all"></th>
+                                    <th style="width: 14%">Time</th>
+                                    <th style="width: 13%">Speaker</th>
+                                    <th style="width: 32%">Original Speech</th>
+                                    <th style="width: 38%">Translation (Click to Edit)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="editor-table-body">
+                                <!-- Will be populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Output Player Card -->
+                <div class="card glass-card player-card hidden" id="card-player">
+                    <h2><i class="fa-solid fa-circle-play icon"></i> 3. Dubbed Output Player</h2>
+                    
+                    <div class="video-wrapper">
+                        <video id="output-video-player" controls>
+                            <source src="" type="video/mp4">
+                            Your browser does not support the HTML5 video tag.
+                        </video>
+                    </div>
+
+                    <div class="download-assets-panel">
+                        <h4>Download Output Subtitles & Metrics</h4>
+                        <div class="assets-row">
+                            <a id="btn-download-srt" href="" download class="btn secondary-btn asset-btn">
+                                <i class="fa-solid fa-file-lines"></i> SRT Subtitles
+                            </a>
+                            <a id="btn-download-vtt" href="" download class="btn secondary-btn asset-btn">
+                                <i class="fa-solid fa-file-code"></i> VTT Subtitles
+                            </a>
+                            <a id="btn-download-ass" href="" download class="btn secondary-btn asset-btn">
+                                <i class="fa-solid fa-file-signature"></i> ASS Subtitles
+                            </a>
+                            <a id="btn-download-report" href="" target="_blank" class="btn secondary-btn asset-btn">
+                                <i class="fa-solid fa-chart-pie"></i> Performance Report
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="player-actions">
+                        <a id="btn-download" href="" download class="btn download-btn">
+                            <i class="fa-solid fa-circle-down"></i> Download Dubbed Video
+                        </a>
+                        <button id="btn-download-audio-only" class="btn secondary-btn" title="Download dubbed audio WAV only">
+                            <i class="fa-solid fa-headphones"></i> Download Audio Only
+                        </button>
+                        <button id="btn-reset" class="btn secondary-btn">
+                            <i class="fa-solid fa-rotate-left"></i> Dub Another Video
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Vanilla Javascript for Live Interactive Experience -->
+    <script>
+        let ws = null;
+        let originalSegments = [];
+        let speakerVoices = {};
+        let speakerPitches = {};
+        let speakerRates = {};
+        let activeVideoId = "";
+        let allVoiceObjects = []; // Full voice list with metadata
+        let currentTargetLocale = "en"; // Target language locale prefix
+        let currentTargetLanguage = "English";
+        let autoScrollEnabled = true;
+        let pipelineStartTime = null;
+        let segmentsProcessed = 0;
+        let undoStack = []; // For undo feature
+        const SPEAKER_COLORS = ["#8f55fd", "#10b981", "#f59e0b", "#ef4444", "#3b82f6", "#ec4899", "#14b8a6", "#f97316"];
+        const LOCALE_MAP = {
+            "English": "en", "Hindi": "hi", "Tamil": "ta", "Bengali": "bn",
+            "Spanish": "es", "French": "fr", "German": "de", "Japanese": "ja",
+            "Korean": "ko", "Portuguese": "pt", "Arabic": "ar", "Russian": "ru",
+            "Chinese": "zh", "Italian": "it", "Turkish": "tr", "Indonesian": "id"
+        };
+
+        // UI elements
+        const btnStart = document.getElementById("btn-start");
+        const duckLevelInput = document.getElementById("duck-level");
+        const duckLevelValue = document.getElementById("duck-level-value");
+        const duckSettingsGroup = document.getElementById("duck-settings-group");
+        const dubbingMode = document.getElementById("dubbing-mode");
+        const consoleLogs = document.getElementById("console-logs");
+        const ttsEngine = document.getElementById("tts-engine");
+        const elevenKeyGroup = document.getElementById("eleven-key-group");
+        
+        // Advanced & EQ Sliders
+        const btnToggleAdvanced = document.getElementById("btn-toggle-advanced");
+        const advancedContent = document.getElementById("advanced-content");
+        const advancedArrow = document.getElementById("advanced-arrow");
+        const chkCompress = document.getElementById("chk-compress");
+        const compressSettingsGroup = document.getElementById("compress-settings-group");
+
+        // EQ slider value update loops
+        const eqLow = document.getElementById("eq-low");
+        const eqMid = document.getElementById("eq-mid");
+        const eqHigh = document.getElementById("eq-high");
+        const noiseGate = document.getElementById("noise-gate");
+        const crfSlider = document.getElementById("crf-slider");
+
+        eqLow.addEventListener("input", (e) => document.getElementById("eq-low-val").innerText = `${e.target.value} dB`);
+        eqMid.addEventListener("input", (e) => document.getElementById("eq-mid-val").innerText = `${e.target.value} dB`);
+        eqHigh.addEventListener("input", (e) => document.getElementById("eq-high-val").innerText = `${e.target.value} dB`);
+        noiseGate.addEventListener("input", (e) => document.getElementById("noise-gate-val").innerText = `${e.target.value} dBFS`);
+        crfSlider.addEventListener("input", (e) => document.getElementById("crf-val").innerText = e.target.value);
+        
+        // Volume slider value updates
+        document.getElementById("tts-volume").addEventListener("input", (e) => document.getElementById("tts-volume-val").innerText = `${e.target.value} dB`);
+        document.getElementById("bg-volume").addEventListener("input", (e) => document.getElementById("bg-volume-val").innerText = `${e.target.value} dB`);
+
+        // Modals elements
+        const statusModal = document.getElementById("status-modal");
+        const modalBody = document.getElementById("modal-body-content");
+        const modalTitle = document.getElementById("modal-title");
+        const modalClose = document.getElementById("modal-close-btn");
+
+        modalClose.addEventListener("click", () => statusModal.classList.add("hidden"));
+        document.getElementById("shortcuts-close-btn").addEventListener("click", () => document.getElementById("shortcuts-modal").classList.add("hidden"));
+        document.getElementById("history-close-btn").addEventListener("click", () => document.getElementById("history-modal").classList.add("hidden"));
+        
+        window.addEventListener("click", (e) => {
+            if (e.target === statusModal) statusModal.classList.add("hidden");
+            if (e.target === document.getElementById("shortcuts-modal")) document.getElementById("shortcuts-modal").classList.add("hidden");
+            if (e.target === document.getElementById("history-modal")) document.getElementById("history-modal").classList.add("hidden");
+        });
+
+        // Initialize system status readings on load
+        window.addEventListener("DOMContentLoaded", () => {
+            fetchStats();
+            fetchLatency();
+            startAutoSaveTimer();
+        });
+
+        async function fetchStats() {
+            try {
+                const response = await fetch("/api/cache-stats");
+                const data = await response.json();
+                document.getElementById("cache-badge").innerHTML = `<i class="fa-solid fa-database"></i> Cache: ${data.cached_segments} items`;
+            } catch (e) {
+                document.getElementById("cache-badge").innerHTML = `<i class="fa-solid fa-database"></i> Cache: offline`;
+            }
+        }
+
+        async function fetchLatency() {
+            try {
+                const start = Date.now();
+                const response = await fetch("/api/cache-stats");
+                const latency = Date.now() - start;
+                document.getElementById("latency-badge").innerHTML = `<i class="fa-solid fa-network-wired"></i> Latency: ${latency} ms`;
+            } catch (e) {
+                document.getElementById("latency-badge").innerHTML = `<i class="fa-solid fa-network-wired"></i> Latency: offline`;
+            }
+        }
+
+        // Test API keys validity
+        document.getElementById("btn-test-keys-top").addEventListener("click", async () => {
+            statusModal.classList.remove("hidden");
+            modalTitle.innerText = "Gemini API Keys Benchmark & Latency Test";
+            modalBody.innerHTML = `<div class="modal-loading"><i class="fa-solid fa-spinner fa-spin"></i> Benchmarking Gemini keys...</div>`;
+            
+            try {
+                const response = await fetch("/api/benchmark-keys");
+                const data = await response.json();
+                
+                if (!data.configured) {
+                    modalBody.innerHTML = `<div class="alert-error-box"><i class="fa-solid fa-triangle-exclamation"></i> No Gemini keys configured. Please add them to your .env file.</div>`;
+                    return;
+                }
+                
+                let listHtml = `<ul class="modal-keys-list">`;
+                data.keys.forEach(k => {
+                    const is_ok = k.status === "valid";
+                    const icon = is_ok ? '<i class="fa-solid fa-circle-check" style="color:#10b981;"></i>' : '<i class="fa-solid fa-circle-xmark" style="color:#ef4444;"></i>';
+                    const label = is_ok ? `<span style="color:#10b981; font-weight:600;">Valid (Latency: ${k.latency_ms} ms)</span>` : `<span style="color:#ef4444; font-weight:600;">Error: ${k.status}</span>`;
+                    listHtml += `<li>Gemini Key ${k.index}: ${icon} ${label}</li>`;
+                });
+                listHtml += "</ul>";
+                modalBody.innerHTML = listHtml;
+            } catch (e) {
+                modalBody.innerHTML = `<div class="alert-error-box"><i class="fa-solid fa-circle-xmark"></i> Failed to query benchmark endpoint: ${e.message}</div>`;
+            }
+        });
+
+        // Clear Cache action
+        document.getElementById("btn-clear-cache-top").addEventListener("click", async () => {
+            if (!confirm("Are you sure you want to clear the local translation cache?")) return;
+            
+            try {
+                const response = await fetch("/api/clear-cache");
+                const data = await response.json();
+                if (data.success) {
+                    alert("Local translation cache cleared successfully.");
+                    fetchStats();
+                } else {
+                    alert(`Failed to clear cache: ${data.message}`);
+                }
+            } catch (e) {
+                alert(`Error calling cache endpoint: ${e.message}`);
+            }
+        });
+
+        // Toggle Advanced options dropdown
+        btnToggleAdvanced.addEventListener("click", () => {
+            advancedContent.classList.toggle("hidden");
+            advancedArrow.classList.toggle("rotate-180");
+        });
+
+        // Toggle Compression settings block
+        chkCompress.addEventListener("change", (e) => {
+            if (e.target.checked) {
+                compressSettingsGroup.classList.remove("hidden");
+            } else {
+                compressSettingsGroup.classList.add("hidden");
+            }
+        });
+
+        // Dynamic Range Value Updates
+        duckLevelInput.addEventListener("input", (e) => {
+            duckLevelValue.innerText = `${e.target.value} dB`;
+        });
+
+        // Hide/Show duck level based on selection
+        dubbingMode.addEventListener("change", (e) => {
+            if (e.target.value === "replace") {
+                duckSettingsGroup.classList.add("disabled-opt");
+            } else {
+                duckSettingsGroup.classList.remove("disabled-opt");
+            }
+        });
+
+        // Hide/Show ElevenLabs Key & F5-TTS URL blocks
+        ttsEngine.addEventListener("change", (e) => {
+            if (e.target.value === "elevenlabs") {
+                elevenKeyGroup.classList.remove("hidden");
+                document.getElementById("f5-tts-url-group").classList.add("hidden");
+            } else if (e.target.value === "f5-tts") {
+                elevenKeyGroup.classList.add("hidden");
+                document.getElementById("f5-tts-url-group").classList.remove("hidden");
+            } else {
+                elevenKeyGroup.classList.add("hidden");
+                document.getElementById("f5-tts-url-group").classList.add("hidden");
+            }
+        });
+
+        // Show shortcuts modal
+        document.getElementById("btn-show-shortcuts").addEventListener("click", () => {
+            document.getElementById("shortcuts-modal").classList.remove("hidden");
+        });
+
+        // Show session history modal
+        document.getElementById("btn-show-history").addEventListener("click", () => {
+            const modal = document.getElementById("history-modal");
+            const body = document.getElementById("history-body");
+            const history = JSON.parse(localStorage.getItem("dubber_session_history") || "[]");
+            
+            if (history.length === 0) {
+                body.innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 20px;">No previous sessions found.</p>`;
+            } else {
+                let html = '<div style="display: flex; flex-direction: column; gap: 8px;">';
+                history.slice().reverse().forEach((session, idx) => {
+                    html += `
+                        <div style="padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-weight: 600; font-size: 13px; color: var(--text-primary);">${session.output_name || 'Unknown'}</div>
+                                <div style="font-size: 11px; color: var(--text-secondary);">${session.url ? session.url.substring(0, 60) + '...' : ''}</div>
+                                <div style="font-size: 10px; color: var(--text-muted);">${session.date} · ${session.target_language || 'English'} · ${session.segments_count || 0} segments</div>
+                            </div>
+                            <button class="btn-small history-reload-btn" data-url="${session.url || ''}" style="padding: 5px 10px; font-size: 11px; background: var(--accent-purple); border: none; border-radius: 4px; color: #fff; cursor: pointer;">
+                                <i class="fa-solid fa-arrow-rotate-right"></i> Reload
+                            </button>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                body.innerHTML = html;
+                
+                body.querySelectorAll(".history-reload-btn").forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        const url = btn.getAttribute("data-url");
+                        if (url) {
+                            document.getElementById("youtube-url").value = url;
+                            modal.classList.add("hidden");
+                        }
+                    });
+                });
+            }
+            modal.classList.remove("hidden");
+        });
+
+        // Console auto-scroll toggle
+        document.getElementById("btn-scroll-lock").addEventListener("click", () => {
+            autoScrollEnabled = !autoScrollEnabled;
+            const btn = document.getElementById("btn-scroll-lock");
+            btn.innerHTML = autoScrollEnabled 
+                ? '<i class="fa-solid fa-lock"></i> Auto-scroll' 
+                : '<i class="fa-solid fa-lock-open"></i> Scroll-free';
+        });
+
+        // Clear console
+        document.getElementById("btn-clear-console").addEventListener("click", () => {
+            consoleLogs.innerHTML = '';
+            appendLog("[System] Console cleared.", "system");
+        });
+
+        // Connect WebSocket for live progress
+        function connectWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//${window.location.host}/ws/progress`;
+            
+            ws = new WebSocket(wsUrl);
+            
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                
+                if (data.log) {
+                    appendLog(data.log, data.type);
+                    // Track synthesis progress for ETA
+                    if (data.log.includes("Synthesizing segment")) {
+                        const match = data.log.match(/(\d+)\/(\d+)/);
+                        if (match) {
+                            segmentsProcessed = parseInt(match[1]);
+                            const total = parseInt(match[2]);
+                            updateETA(segmentsProcessed, total);
+                        }
+                    }
+                }
+                
+                if (data.step_status) {
+                    updateStepStatus(data.step_status.step, data.step_status.status);
+                    if (data.step_status.step === "synthesize" && data.step_status.status === "active") {
+                        pipelineStartTime = Date.now();
+                        segmentsProcessed = 0;
+                        document.getElementById("eta-badge").style.display = "inline-flex";
+                    }
+                }
+                
+                if (data.progress !== undefined) {
+                    document.getElementById("pipeline-progress-bar").style.width = `${data.progress}%`;
+                }
+                
+                if (data.status_text) {
+                    document.getElementById("pipeline-status-text").innerText = data.status_text;
+                }
+                
+                // When transcription and translation is ready for editing
+                if (data.event === "EDITING_READY") {
+                    originalSegments = data.segments;
+                    activeVideoId = data.video_id;
+                    allVoiceObjects = data.available_voices || [];
+                    currentTargetLocale = data.target_locale || "en";
+                    currentTargetLanguage = data.target_language || "English";
+                    
+                    // Show detected language badge
+                    if (data.detected_language) {
+                        const langBadge = document.getElementById("detected-lang-badge");
+                        langBadge.innerHTML = `<i class="fa-solid fa-language"></i> Source: ${data.detected_language}`;
+                        langBadge.style.display = "inline-flex";
+                    }
+                    
+                    // Show thumbnail image fetched
+                    if (data.thumbnail_url) {
+                        const img = document.getElementById("editor-video-thumbnail");
+                        img.src = data.thumbnail_url;
+                        img.classList.remove("hidden");
+                    }
+                    
+                    document.getElementById("video-preview-title").innerText = document.getElementById("output-name").value;
+                    displayEditor(data.segments, data.speakers, allVoiceObjects);
+                    
+                    // Save to session history
+                    saveSessionHistory();
+                }
+                
+                // When entire process completes
+                if (data.event === "PIPELINE_COMPLETE") {
+                    displayPlayer(data.output_url);
+                    fetchStats();
+                    document.getElementById("eta-badge").style.display = "none";
+                }
+            };
+
+            ws.onerror = (e) => {
+                console.error("WS error:", e);
+                appendLog("[Error] Connection issue with WebSocket logs.", "error");
+            };
+
+            ws.onclose = () => {
+                console.log("WS closed");
+            };
+        }
+
+        function appendLog(message, type = "info") {
+            const line = document.createElement("div");
+            line.classList.add("console-line");
+            if (type === "error") line.classList.add("error-msg");
+            if (type === "success") line.classList.add("success-msg");
+            if (type === "system") line.classList.add("system-msg");
+            
+            line.innerText = message;
+            consoleLogs.appendChild(line);
+            if (autoScrollEnabled) {
+                consoleLogs.scrollTop = consoleLogs.scrollHeight;
+            }
+        }
+
+        function updateStepStatus(stepId, status) {
+            const el = document.getElementById(`step-${stepId}`);
+            if (!el) return;
+            
+            el.className = status;
+            
+            if (status === "active") {
+                el.querySelector("i").className = "fa-solid fa-spinner fa-spin";
+            } else if (status === "completed") {
+                el.querySelector("i").className = "fa-solid fa-circle-check";
+            } else if (status === "failed") {
+                el.querySelector("i").className = "fa-solid fa-circle-xmark";
+            } else {
+                el.querySelector("i").className = "fa-solid fa-circle-dot";
+            }
+        }
+
+        function resetSteps() {
+            const steps = ["download", "transcribe", "diarize", "translate", "edit", "synthesize", "mux"];
+            steps.forEach(s => updateStepStatus(s, "pending"));
+            document.getElementById("pipeline-progress-bar").style.width = "0%";
+            document.getElementById("pipeline-status-text").innerText = "Initializing...";
+            document.getElementById("eta-badge").style.display = "none";
+        }
+
+        // ETA calculator for synthesis phase
+        function updateETA(processed, total) {
+            if (!pipelineStartTime || processed <= 0) return;
+            const elapsed = (Date.now() - pipelineStartTime) / 1000;
+            const avgPerSeg = elapsed / processed;
+            const remaining = (total - processed) * avgPerSeg;
+            const mins = Math.floor(remaining / 60);
+            const secs = Math.floor(remaining % 60);
+            document.getElementById("eta-badge").innerHTML = `<i class="fa-solid fa-hourglass-half"></i> ETA: ${mins}m ${secs}s (${processed}/${total})`;
+        }
+
+        // Start processing action
+        btnStart.addEventListener("click", () => {
+            const url = document.getElementById("youtube-url").value.trim();
+            if (!url) {
+                alert("Please enter a YouTube video URL.");
+                return;
+            }
+
+            // Verify API Key if ElevenLabs is selected
+            if (ttsEngine.value === "elevenlabs" && !document.getElementById("eleven-api-key").value.trim()) {
+                alert("Please enter your ElevenLabs API Key to enable voice cloning.");
+                return;
+            }
+
+            resetSteps();
+            consoleLogs.innerHTML = "";
+            appendLog("[System] Establishing connection...", "system");
+            
+            // Re-establish socket
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.close();
+            }
+            connectWebSocket();
+
+            // Wait brief moment for WS to connect
+            setTimeout(() => {
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    btnStart.disabled = true;
+                    btnStart.querySelector(".btn-text").innerText = "Processing...";
+                    btnStart.querySelector(".btn-spinner").classList.remove("hidden");
+                    
+                    document.getElementById("card-progress").classList.remove("hidden");
+                    document.getElementById("card-welcome").classList.remove("hidden");
+                    document.getElementById("card-editor").classList.add("hidden");
+                    document.getElementById("card-player").classList.add("hidden");
+
+                    const config = {
+                        url: url,
+                        model: document.getElementById("transcription-model").value,
+                        output_name: document.getElementById("output-name").value,
+                        mode: dubbingMode.value,
+                        duck_level: parseFloat(duckLevelInput.value),
+                        target_language: document.getElementById("target-language").value,
+                        download_quality: document.getElementById("download-quality").value,
+                        
+                        // Quality flags
+                        use_cache: document.getElementById("chk-use-cache").checked,
+                        burn_subtitles: document.getElementById("chk-burn-subs").checked,
+                        waveform_overlay: document.getElementById("chk-waveform").checked,
+                        compress_video: chkCompress.checked,
+                        crf_value: parseInt(crfSlider.value),
+                        
+                        // EQ levels
+                        eq_low: parseFloat(eqLow.value),
+                        eq_mid: parseFloat(eqMid.value),
+                        eq_high: parseFloat(eqHigh.value),
+                        noise_gate: parseFloat(noiseGate.value)
+                    };
+                    
+                    // Send message to initiate pipeline
+                    ws.send(JSON.stringify({ action: "start_pipeline", config: config }));
+                } else {
+                    alert("Unable to establish progress server channel. Please try again.");
+                }
+            }, 500);
+        });
+
+        // Helper: filter voices by locale
+        function getFilteredVoices(voiceObjects, locale) {
+            if (!locale || locale === "all") return voiceObjects;
+            return voiceObjects.filter(v => {
+                const voiceLocale = (v.locale || v.short_name || "").toLowerCase();
+                return voiceLocale.startsWith(locale.toLowerCase() + "-") || voiceLocale.startsWith(locale.toLowerCase());
+            });
+        }
+
+        // Editor layout rendering
+        function displayEditor(segments, speakers, availableVoices) {
+            document.getElementById("card-welcome").classList.add("hidden");
+            document.getElementById("card-editor").classList.remove("hidden");
+            
+            // Update human verification step status
+            updateStepStatus("edit", "active");
+
+            // Update stats badges
+            document.getElementById("segment-count-badge").innerHTML = `<i class="fa-solid fa-list-ol"></i> ${segments.length} segments`;
+            if (segments.length > 0) {
+                const totalDur = segments[segments.length - 1].end_time - segments[0].start_time;
+                const totalMins = Math.floor(totalDur / 60);
+                const totalSecs = Math.floor(totalDur % 60);
+                document.getElementById("total-duration-badge").innerHTML = `<i class="fa-solid fa-clock"></i> ${totalMins}:${totalSecs.toString().padStart(2, '0')}`;
+            }
+            updateWordCount();
+
+            // 1. Render Speaker Voice Mappings
+            const mappingArea = document.getElementById("voice-mapping-area");
+            mappingArea.innerHTML = "";
+            speakerVoices = {};
+            speakerPitches = {};
+            speakerRates = {};
+
+            // Filter voices by target locale
+            const localeVoices = getFilteredVoices(availableVoices, currentTargetLocale);
+            const voicesToUse = localeVoices.length > 0 ? localeVoices : availableVoices;
+
+            // Separate voices into male and female pools using gender metadata
+            const femaleVoices = voicesToUse.filter(v => (v.gender || "").toLowerCase() === "female");
+            const maleVoices = voicesToUse.filter(v => (v.gender || "").toLowerCase() !== "female");
+
+            let femaleIdx = 0;
+            let maleIdx = 0;
+
+            speakers.forEach((speaker, i) => {
+                const group = document.createElement("div");
+                group.className = "voice-mapping-group";
+                group.style.border = "1px solid rgba(255,255,255,0.04)";
+                group.style.padding = "10px";
+                group.style.borderRadius = "8px";
+                group.style.background = "rgba(0,0,0,0.15)";
+                
+                const label = document.createElement("label");
+                const speakerColor = SPEAKER_COLORS[i % SPEAKER_COLORS.length];
+                label.innerHTML = `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${speakerColor};margin-right:6px;"></span>${speaker} Config`;
+                label.style.fontWeight = "600";
+                label.style.color = speakerColor;
+                label.style.marginBottom = "8px";
+                
+                // Search filter input
+                const searchRow = document.createElement("div");
+                searchRow.style.display = "flex";
+                searchRow.style.gap = "6px";
+                searchRow.style.marginBottom = "6px";
+                
+                const filterInput = document.createElement("input");
+                filterInput.type = "text";
+                filterInput.placeholder = `Filter ${currentTargetLanguage} voices...`;
+                filterInput.style.cssText = "padding: 4px 8px; font-size: 11px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #fff; flex: 1;";
+                
+                searchRow.appendChild(filterInput);
+                
+                const row = document.createElement("div");
+                row.style.display = "flex";
+                row.style.flexDirection = "column";
+                row.style.gap = "6px";
+                row.style.width = "100%";
+                
+                const select = document.createElement("select");
+                select.id = `voice-select-${speaker.replace(/\s+/g, '_')}`;
+                select.style.fontSize = "11px";
+                select.style.padding = "5px";
+                select.style.color = "#fff";
+                select.style.background = "rgba(0,0,0,0.4)";
+                select.style.border = "1px solid rgba(255,255,255,0.1)";
+                select.style.borderRadius = "4px";
+                
+                // Determine voice gender based on speaker name using exact suffix match
+                const speakerLower = speaker.toLowerCase();
+                const isFemale = speakerLower.includes("(female)");
+                const isMale = speakerLower.includes("(male)") && !isFemale;
+                let defaultVoice = null;
+                
+                if (isFemale && femaleVoices.length > 0) {
+                    defaultVoice = femaleVoices[femaleIdx % femaleVoices.length];
+                    femaleIdx++;
+                } else if (isMale && maleVoices.length > 0) {
+                    defaultVoice = maleVoices[maleIdx % maleVoices.length];
+                    maleIdx++;
+                } else {
+                    // Default to male voices for ungendered speakers
+                    if (maleVoices.length > 0) {
+                        defaultVoice = maleVoices[maleIdx % maleVoices.length];
+                        maleIdx++;
+                    } else {
+                        defaultVoice = voicesToUse[i % voicesToUse.length];
+                    }
+                }
+                
+                // Populate options based on filter
+                function populateOptions(filterText = "") {
+                    select.innerHTML = "";
+                    const lowerFilter = filterText.toLowerCase();
+                    voicesToUse.forEach((voice) => {
+                        const shortName = voice.short_name || voice;
+                        const displayName = shortName.replace("Neural", "") + (voice.gender ? ` (${voice.gender})` : "");
+                        if (displayName.toLowerCase().includes(lowerFilter)) {
+                            const opt = document.createElement("option");
+                            opt.value = shortName;
+                            opt.innerText = displayName;
+                            opt.style.color = "#fff";
+                            if (defaultVoice && shortName === (defaultVoice.short_name || defaultVoice)) {
+                                opt.selected = true;
+                                speakerVoices[speaker] = shortName;
+                            }
+                            select.appendChild(opt);
+                        }
+                    });
+                    // If no option was pre-selected, select first one
+                    if (select.selectedIndex === -1 && select.options.length > 0) {
+                        select.options[0].selected = true;
+                        speakerVoices[speaker] = select.options[0].value;
+                    }
+                }
+                
+                filterInput.addEventListener("input", (e) => {
+                    populateOptions(e.target.value);
+                });
+                
+                populateOptions();
+                
+                select.addEventListener("change", (e) => {
+                    speakerVoices[speaker] = e.target.value;
+                });
+                
+                // Pitch selector
+                const pitchSelect = document.createElement("select");
+                pitchSelect.style.cssText = "font-size: 11px; padding: 5px; color: #fff; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;";
+                pitchSelect.innerHTML = `
+                    <option value="+0Hz">Default Pitch (+0Hz)</option>
+                    <option value="-20Hz">Deep Pitch (-20Hz)</option>
+                    <option value="-10Hz">Low Pitch (-10Hz)</option>
+                    <option value="+10Hz">High Pitch (+10Hz)</option>
+                    <option value="+20Hz">Squeaky Pitch (+20Hz)</option>
+                    <option value="-10%">Low Pitch (-10%)</option>
+                    <option value="+10%">High Pitch (+10%)</option>
+                `;
+                speakerPitches[speaker] = "+0Hz";
+                pitchSelect.addEventListener("change", (e) => {
+                    speakerPitches[speaker] = e.target.value;
+                });
+                
+                // Speed rate selector
+                const rateSelect = document.createElement("select");
+                rateSelect.style.cssText = "font-size: 11px; padding: 5px; color: #fff; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;";
+                rateSelect.innerHTML = `
+                    <option value="+0%">Default Speed (Auto)</option>
+                    <option value="-20%">Slower (-20%)</option>
+                    <option value="-10%">Medium Slower (-10%)</option>
+                    <option value="+10%">Medium Faster (+10%)</option>
+                    <option value="+20%">Faster (+20%)</option>
+                `;
+                speakerRates[speaker] = "+0%";
+                rateSelect.addEventListener("change", (e) => {
+                    speakerRates[speaker] = e.target.value;
+                });
+                
+                // Preview Play Button
+                const btnPlay = document.createElement("button");
+                btnPlay.type = "button";
+                btnPlay.className = "btn-small";
+                btnPlay.style.cssText = "padding: 5px 10px; font-size: 11px; width: 100%; justify-content: center; background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3); color: #a78bfa; border-radius: 4px; cursor: pointer;";
+                btnPlay.innerHTML = `<i class="fa-solid fa-play"></i> Play Preview`;
+                
+                let audioPlayer = null;
+                btnPlay.addEventListener("click", async () => {
+                    const selectedVoice = select.value;
+                    if (!selectedVoice) return;
+                    
+                    btnPlay.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Loading...`;
+                    btnPlay.disabled = true;
+                    try {
+                        const res = await fetch(`/api/preview-voice?voice=${selectedVoice}`);
+                        const data = await res.json();
+                        if (data.success) {
+                            if (audioPlayer) {
+                                audioPlayer.pause();
+                            }
+                            audioPlayer = new Audio(data.url);
+                            btnPlay.innerHTML = `<i class="fa-solid fa-volume-high"></i> Playing...`;
+                            audioPlayer.play();
+                            audioPlayer.onended = () => {
+                                btnPlay.innerHTML = `<i class="fa-solid fa-play"></i> Play Preview`;
+                                btnPlay.disabled = false;
+                            };
+                        } else {
+                            alert(`Failed to load preview: ${data.message}`);
+                            btnPlay.innerHTML = `<i class="fa-solid fa-play"></i> Play Preview`;
+                            btnPlay.disabled = false;
+                        }
+                    } catch (err) {
+                        console.error("Preview error:", err);
+                        btnPlay.innerHTML = `<i class="fa-solid fa-play"></i> Play Preview`;
+                        btnPlay.disabled = false;
+                    }
+                });
+                
+                if (ttsEngine.value === "elevenlabs" || ttsEngine.value === "f5-tts") {
+                    select.disabled = true;
+                    filterInput.disabled = true;
+                    pitchSelect.disabled = true;
+                    rateSelect.disabled = true;
+                    btnPlay.disabled = true;
+                    speakerVoices[speaker] = "cloned";
+                }
+                
+                row.appendChild(select);
+                row.appendChild(pitchSelect);
+                row.appendChild(rateSelect);
+                row.appendChild(btnPlay);
+                
+                group.appendChild(label);
+                group.appendChild(searchRow);
+                group.appendChild(row);
+                mappingArea.appendChild(group);
+            });
+
+            // 2. Render Table Rows
+            const tbody = document.getElementById("editor-table-body");
+            tbody.innerHTML = "";
+
+            segments.forEach((seg, index) => {
+                const tr = document.createElement("tr");
+                
+                // Checkbox cell
+                const tdCheck = document.createElement("td");
+                const chk = document.createElement("input");
+                chk.type = "checkbox";
+                chk.className = "segment-checkbox";
+                chk.dataset.index = index;
+                tdCheck.appendChild(chk);
+                
+                // Formatted Time range with duration
+                const startStr = formatTime(seg.start_time);
+                const endStr = formatTime(seg.end_time);
+                const duration = (seg.end_time - seg.start_time).toFixed(1);
+                
+                const tdTime = document.createElement("td");
+                tdTime.className = "time-col";
+                tdTime.innerHTML = `${startStr} - ${endStr}<br><span style="font-size:10px;color:var(--text-muted);font-weight:600;">${duration}s</span>`;
+                
+                // Speaker Badge with color
+                const speakerIdx = speakers ? speakers.indexOf(seg.speaker) : 0;
+                const spColor = SPEAKER_COLORS[(speakerIdx >= 0 ? speakerIdx : 0) % SPEAKER_COLORS.length];
+                const tdSpeaker = document.createElement("td");
+                tdSpeaker.innerHTML = `<span class="speaker-badge" style="border-left: 3px solid ${spColor}; padding-left: 8px;">${seg.speaker}</span>`;
+                
+                // Original Speech with copy button
+                const tdOrig = document.createElement("td");
+                const origWrapper = document.createElement("div");
+                origWrapper.style.position = "relative";
+                const origText = document.createElement("div");
+                origText.innerText = seg.text;
+                origText.style.paddingRight = "24px";
+                const copyBtn = document.createElement("button");
+                copyBtn.type = "button";
+                copyBtn.innerHTML = `<i class="fa-solid fa-copy"></i>`;
+                copyBtn.title = "Copy original text";
+                copyBtn.style.cssText = "position:absolute;top:0;right:0;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:11px;padding:2px;opacity:0.5;transition:opacity 0.2s;";
+                copyBtn.addEventListener("mouseenter", () => copyBtn.style.opacity = "1");
+                copyBtn.addEventListener("mouseleave", () => copyBtn.style.opacity = "0.5");
+                copyBtn.addEventListener("click", () => {
+                    navigator.clipboard.writeText(seg.text);
+                    copyBtn.innerHTML = `<i class="fa-solid fa-check" style="color:#10b981;"></i>`;
+                    setTimeout(() => copyBtn.innerHTML = `<i class="fa-solid fa-copy"></i>`, 1500);
+                });
+                origWrapper.appendChild(origText);
+                origWrapper.appendChild(copyBtn);
+                tdOrig.appendChild(origWrapper);
+                
+                // Editable translation box
+                const tdTrans = document.createElement("td");
+                
+                const transRow = document.createElement("div");
+                transRow.style.display = "flex";
+                transRow.style.gap = "6px";
+                transRow.style.alignItems = "start";
+                transRow.style.width = "100%";
+                
+                const textarea = document.createElement("textarea");
+                textarea.className = "trans-input";
+                textarea.style.flex = "1";
+                const initialVal = seg.translated_text || seg.text;
+                textarea.value = initialVal;
+                textarea.id = `trans-text-${index}`;
+                
+                const btnRevert = document.createElement("button");
+                btnRevert.type = "button";
+                btnRevert.className = "btn-small";
+                btnRevert.style.cssText = "padding: 0.4rem; border-radius: 4px; display: flex; align-items: center; justify-content: center; height: 34px; width: 34px;";
+                btnRevert.innerHTML = `<i class="fa-solid fa-arrow-rotate-left"></i>`;
+                btnRevert.title = "Revert to original translation";
+                
+                // Segment preview button
+                const btnSegPreview = document.createElement("button");
+                btnSegPreview.type = "button";
+                btnSegPreview.className = "btn-small";
+                btnSegPreview.style.cssText = "padding: 0.4rem; border-radius: 4px; display: flex; align-items: center; justify-content: center; height: 34px; width: 34px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399;";
+                btnSegPreview.innerHTML = `<i class="fa-solid fa-headphones"></i>`;
+                btnSegPreview.title = "Preview this segment's TTS";
+                
+                btnSegPreview.addEventListener("click", async () => {
+                    const voice = speakerVoices[seg.speaker];
+                    if (!voice || voice === "cloned") return;
+                    btnSegPreview.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
+                    btnSegPreview.disabled = true;
+                    try {
+                        const res = await fetch(`/api/preview-voice?voice=${voice}`);
+                        const data = await res.json();
+                        if (data.success) {
+                            const audio = new Audio(data.url);
+                            audio.play();
+                            audio.onended = () => {
+                                btnSegPreview.innerHTML = `<i class="fa-solid fa-headphones"></i>`;
+                                btnSegPreview.disabled = false;
+                            };
+                        }
+                    } catch (e) {
+                        btnSegPreview.innerHTML = `<i class="fa-solid fa-headphones"></i>`;
+                        btnSegPreview.disabled = false;
+                    }
+                });
+                
+                const validationLabel = document.createElement("div");
+                validationLabel.style.fontSize = "0.75rem";
+                validationLabel.style.marginTop = "4px";
+                validationLabel.style.display = "flex";
+                validationLabel.style.justifyContent = "space-between";
+                
+                btnRevert.addEventListener("click", () => {
+                    textarea.value = initialVal;
+                    updateValidation(textarea, seg.start_time, seg.end_time, validationLabel);
+                    calculateTotalEstimatedCost();
+                });
+                
+                transRow.appendChild(textarea);
+                transRow.appendChild(btnSegPreview);
+                transRow.appendChild(btnRevert);
+                tdTrans.appendChild(transRow);
+                tdTrans.appendChild(validationLabel);
+                
+                // Initial validation run
+                updateValidation(textarea, seg.start_time, seg.end_time, validationLabel);
+                
+                // Listen to live edits with undo tracking
+                textarea.addEventListener("input", () => {
+                    updateValidation(textarea, seg.start_time, seg.end_time, validationLabel);
+                    calculateTotalEstimatedCost();
+                    updateWordCount();
+                });
+                
+                textarea.addEventListener("focus", () => {
+                    undoStack.push({ index: index, value: textarea.value });
+                    if (undoStack.length > 50) undoStack.shift();
+                });
+                
+                tr.appendChild(tdCheck);
+                tr.appendChild(tdTime);
+                tr.appendChild(tdSpeaker);
+                tr.appendChild(tdOrig);
+                tr.appendChild(tdTrans);
+                
+                // Highlight row and seek player on click
+                tr.style.cursor = "pointer";
+                tr.addEventListener("click", (e) => {
+                    if (e.target.tagName === "TEXTAREA" || e.target.tagName === "BUTTON" || e.target.tagName === "I" || e.target.tagName === "INPUT") {
+                        return;
+                    }
+                    const player = document.getElementById("output-video-player");
+                    if (player && player.src) {
+                        player.currentTime = seg.start_time;
+                        player.play();
+                        
+                        document.querySelectorAll("#editor-table-body tr").forEach(r => r.style.backgroundColor = "");
+                        tr.style.backgroundColor = "rgba(143, 85, 253, 0.15)";
+                    }
+                });
+                
+                tbody.appendChild(tr);
+            });
+            calculateTotalEstimatedCost();
+            updateWordCount();
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            const ms = Math.floor((seconds % 1) * 10);
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}.${ms}`;
+        }
+
+        // Update word count badge
+        function updateWordCount() {
+            let totalWords = 0;
+            if (originalSegments) {
+                originalSegments.forEach((seg, index) => {
+                    const textarea = document.getElementById(`trans-text-${index}`);
+                    const text = textarea ? textarea.value.trim() : (seg.translated_text || seg.text || "");
+                    totalWords += text ? text.split(/\s+/).length : 0;
+                });
+            }
+            document.getElementById("word-count-badge").innerHTML = `<i class="fa-solid fa-font"></i> ${totalWords} words`;
+        }
+
+        // Action when edited translations are submitted
+        document.getElementById("btn-submit-edits").addEventListener("click", () => {
+            const updatedSegments = originalSegments.map((seg, index) => {
+                return {
+                    ...seg,
+                    text: document.getElementById(`trans-text-${index}`).value.trim(),
+                    voice: speakerVoices[seg.speaker],
+                    pitch: speakerPitches[seg.speaker] || "+0Hz",
+                    rate: speakerRates[seg.speaker] || "+0%"
+                };
+            });
+
+            // Put Human Verification step status to complete
+            updateStepStatus("edit", "completed");
+            document.getElementById("card-editor").classList.add("hidden");
+            document.getElementById("card-welcome").classList.remove("hidden");
+            document.getElementById("card-welcome").innerHTML = `
+                <div class="welcome-content">
+                    <i class="fa-solid fa-spinner fa-spin welcome-icon"></i>
+                    <h3>Generating Dubbed Video...</h3>
+                    <p>Now synthesizing voice clips and mixing the final dubbed video track. Please monitor the logs panel.</p>
+                </div>
+            `;
+
+            // Parse pronunciation dict
+            const dictRaw = document.getElementById("pronunciation-dict").value.trim();
+            const dictMap = {};
+            if (dictRaw) {
+                dictRaw.split("\n").forEach(line => {
+                    const parts = line.split("->");
+                    if (parts.length === 2) {
+                        dictMap[parts[0].trim()] = parts[1].trim();
+                    }
+                });
+            }
+
+            // Post back edits via websocket
+            ws.send(JSON.stringify({
+                action: "synthesize_and_mux",
+                video_id: activeVideoId,
+                segments: updatedSegments,
+                voice_map: speakerVoices,
+                tts_engine: ttsEngine.value,
+                eleven_api_key: document.getElementById("eleven-api-key").value.trim(),
+                f5_tts_url: document.getElementById("f5-tts-url").value.trim(),
+                // Subtitle style overrides
+                sub_fontname: document.getElementById("sub-fontname").value,
+                sub_fontsize: parseInt(document.getElementById("sub-fontsize").value),
+                sub_fontcolor: document.getElementById("sub-fontcolor").value,
+                sub_outlinecolor: document.getElementById("sub-outlinecolor").value,
+                pronunciation_dict: dictMap,
+                // Volume controls
+                tts_vol_db: parseFloat(document.getElementById("tts-volume").value),
+                bg_vol_db: parseFloat(document.getElementById("bg-volume").value)
+            }));
+        });
+
+        // Final output player layout
+        function displayPlayer(videoUrl) {
+            document.getElementById("card-welcome").classList.add("hidden");
+            document.getElementById("card-player").classList.remove("hidden");
+            
+            const player = document.getElementById("output-video-player");
+            player.src = videoUrl;
+            player.load();
+            
+            const outputName = document.getElementById("output-name").value;
+            
+            // Set download endpoints links
+            document.getElementById("btn-download").href = videoUrl;
+            document.getElementById("btn-download-srt").href = `/api/download-subs?filename=${outputName}&format=srt`;
+            document.getElementById("btn-download-vtt").href = `/api/download-subs?filename=${outputName}&format=vtt`;
+            document.getElementById("btn-download-ass").href = `/api/download-subs?filename=${outputName}&format=ass`;
+            document.getElementById("btn-download-report").href = `/api/download-report?filename=${outputName}`;
+
+            // Audio-only download
+            document.getElementById("btn-download-audio-only").onclick = () => {
+                const audioUrl = videoUrl.replace(".mp4", "_dubbed.wav").replace("/outputs/", "/outputs/");
+                window.open(audioUrl, "_blank");
+            };
+
+            // Restore Start Button state
+            btnStart.disabled = false;
+            btnStart.querySelector(".btn-text").innerHTML = `<i class="fa-solid fa-bolt"></i> Start Processing`;
+            btnStart.querySelector(".btn-spinner").classList.add("hidden");
+        }
+
+        document.getElementById("btn-reset").addEventListener("click", () => {
+            document.getElementById("card-player").classList.add("hidden");
+            document.getElementById("card-progress").classList.add("hidden");
+            document.getElementById("card-welcome").classList.remove("hidden");
+            document.getElementById("card-welcome").innerHTML = `
+                <div class="welcome-content">
+                    <i class="fa-solid fa-wand-magic-sparkles welcome-icon"></i>
+                    <h3>Enter a video URL to get started</h3>
+                    <p>The dubber will download the video, transcribe the speech turns, identify the speakers, and translate to your chosen language. You'll be able to review and edit the transcriptions right here before rendering the video.</p>
+                </div>
+            `;
+            document.getElementById("youtube-url").value = "";
+            document.getElementById("eleven-api-key").value = "";
+            resetSteps();
+        });
+
+        // Voice presets manager click handlers
+        document.getElementById("btn-save-preset").addEventListener("click", async () => {
+            const name = document.getElementById("preset-name-input").value.trim();
+            if (!name) {
+                alert("Please enter a preset name.");
+                return;
+            }
+            try {
+                const response = await fetch("/api/save-preset", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name: name, voice_map: speakerVoices })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert(`Voice preset '${name}' saved successfully.`);
+                } else {
+                    alert("Failed to save preset.");
+                }
+            } catch (e) {
+                alert(`Error saving preset: ${e.message}`);
+            }
+        });
+
+        document.getElementById("btn-load-preset").addEventListener("click", async () => {
+            const name = document.getElementById("preset-name-input").value.trim();
+            if (!name) {
+                alert("Please enter a preset name.");
+                return;
+            }
+            try {
+                const response = await fetch(`/api/load-preset?name=${name}`);
+                const data = await response.json();
+                if (data.success) {
+                    const preset = data.preset;
+                    Object.keys(preset).forEach(speaker => {
+                        speakerVoices[speaker] = preset[speaker];
+                        const selectEl = document.getElementById(`voice-select-${speaker.replace(/\s+/g, '_')}`);
+                        if (selectEl) {
+                            selectEl.value = preset[speaker];
+                        }
+                    });
+                    alert(`Voice preset '${name}' loaded successfully.`);
+                } else {
+                    alert("Preset not found.");
+                }
+            } catch (e) {
+                alert(`Error loading preset: ${e.message}`);
+            }
+        });
+
+        // 1. Live Char & WPM Validation Helper
+        function updateValidation(textarea, startTime, endTime, labelEl) {
+            const text = textarea.value.trim();
+            const charCount = text.length;
+            const duration = endTime - startTime;
+            
+            const wordCount = text ? text.split(/\s+/).length : 0;
+            const durationMin = duration / 60.0;
+            const wpm = durationMin > 0 ? Math.round(wordCount / durationMin) : 0;
+            
+            // Estimated TTS duration
+            const estDuration = (wordCount / 150) * 60; // avg 150 WPM
+            const durationDiff = estDuration - duration;
+            let durationTag = "";
+            if (durationDiff > 2) {
+                durationTag = `<span style="color:#ef4444;font-size:10px;">⏱ +${durationDiff.toFixed(1)}s over</span>`;
+            } else if (durationDiff > 0) {
+                durationTag = `<span style="color:#f59e0b;font-size:10px;">⏱ +${durationDiff.toFixed(1)}s tight</span>`;
+            }
+            
+            let badgeText = "Comfortable";
+            let badgeColor = "#10b981";
+            if (wpm > 170) {
+                badgeText = "Too Fast";
+                badgeColor = "#ef4444";
+                textarea.style.borderColor = "#ef4444";
+            } else if (wpm > 140) {
+                badgeText = "Dense";
+                badgeColor = "#f59e0b";
+                textarea.style.borderColor = "#f59e0b";
+            } else if (wpm > 100) {
+                badgeText = "Good";
+                badgeColor = "#14b8a6";
+                textarea.style.borderColor = "";
+            } else {
+                textarea.style.borderColor = "";
+            }
+            labelEl.innerHTML = `<span>Chars: ${charCount}</span> <span style="color: ${badgeColor}; font-weight: 600;">WPM: ${wpm} (${badgeText})</span> ${durationTag}`;
+        }
+
+        // 2. Cost Estimator Helper
+        function calculateTotalEstimatedCost() {
+            const badge = document.getElementById("cost-estimator");
+            if (!originalSegments || originalSegments.length === 0) {
+                badge.style.display = "none";
+                return;
+            }
+            let totalChars = 0;
+            originalSegments.forEach((seg, index) => {
+                const textarea = document.getElementById(`trans-text-${index}`);
+                if (textarea) {
+                    totalChars += textarea.value.length;
+                } else {
+                    totalChars += (seg.translated_text || seg.text || "").length;
+                }
+            });
+            const cost = (totalChars / 1000) * 0.00005;
+            badge.innerHTML = `<i class="fa-solid fa-coins"></i> Estimated API Cost: $${cost.toFixed(5)}`;
+            badge.style.display = "inline-flex";
+        }
+
+        // 3. Light/Dark Theme Switcher
+        document.getElementById("btn-theme-toggle").addEventListener("click", () => {
+            const body = document.body;
+            const btn = document.getElementById("btn-theme-toggle");
+            if (body.classList.contains("light-theme")) {
+                body.classList.remove("light-theme");
+                btn.innerHTML = `<i class="fa-solid fa-moon"></i> Theme`;
+                localStorage.setItem("theme", "dark");
+            } else {
+                body.classList.add("light-theme");
+                btn.innerHTML = `<i class="fa-solid fa-sun"></i> Theme`;
+                localStorage.setItem("theme", "light");
+            }
+        });
+
+        // Restore saved theme
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme === "light") {
+            document.body.classList.add("light-theme");
+            document.getElementById("btn-theme-toggle").innerHTML = `<i class="fa-solid fa-sun"></i> Theme`;
+        }
+
+        // 4. Reset Settings Configurations
+        document.getElementById("btn-reset-config").addEventListener("click", () => {
+            document.getElementById("transcription-model").value = "gemini-3.1-flash-lite";
+            document.getElementById("target-language").value = "English";
+            
+            const ttsEngine = document.getElementById("tts-engine");
+            ttsEngine.value = "edge-tts";
+            ttsEngine.dispatchEvent(new Event("change"));
+            
+            document.getElementById("dubbing-mode").value = "duck";
+            document.getElementById("dubbing-mode").dispatchEvent(new Event("change"));
+            
+            document.getElementById("duck-level").value = "-20";
+            document.getElementById("duck-level-value").innerText = "-20 dB";
+            
+            document.getElementById("tts-volume").value = "0";
+            document.getElementById("tts-volume-val").innerText = "0 dB";
+            document.getElementById("bg-volume").value = "0";
+            document.getElementById("bg-volume-val").innerText = "0 dB";
+            
+            document.getElementById("eq-low").value = "0";
+            document.getElementById("eq-low-val").innerText = "0 dB";
+            document.getElementById("eq-mid").value = "0";
+            document.getElementById("eq-mid-val").innerText = "0 dB";
+            document.getElementById("eq-high").value = "0";
+            document.getElementById("eq-high-val").innerText = "0 dB";
+            
+            document.getElementById("noise-gate").value = "-45";
+            document.getElementById("noise-gate-val").innerText = "-45 dBFS";
+            
+            document.getElementById("chk-use-cache").checked = true;
+            document.getElementById("chk-burn-subs").checked = false;
+            document.getElementById("chk-waveform").checked = false;
+            
+            const compress = document.getElementById("chk-compress");
+            compress.checked = false;
+            compress.dispatchEvent(new Event("change"));
+            
+            document.getElementById("crf-slider").value = "24";
+            document.getElementById("crf-val").innerText = "24";
+        });
+
+        // 5. Presets Deletion Handler
+        document.getElementById("btn-delete-preset").addEventListener("click", async () => {
+            const name = document.getElementById("preset-name-input").value.trim();
+            if (!name) {
+                alert("Please enter a preset name to delete.");
+                return;
+            }
+            if (!confirm(`Are you sure you want to delete preset '${name}'?`)) {
+                return;
+            }
+            try {
+                const response = await fetch(`/api/delete-preset?name=${name}`, {
+                    method: "DELETE"
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert(`Voice preset '${name}' deleted successfully.`);
+                    document.getElementById("preset-name-input").value = "";
+                } else {
+                    alert(`Failed to delete preset: ${data.message}`);
+                }
+            } catch (e) {
+                alert(`Error deleting preset: ${e.message}`);
+            }
+        });
+
+        // 6. Export Script JSON Handler
+        document.getElementById("btn-export-script").addEventListener("click", () => {
+            if (!originalSegments || originalSegments.length === 0) {
+                alert("No segments to export. Please process a video first.");
+                return;
+            }
+            const exportData = originalSegments.map((seg, index) => {
+                const textarea = document.getElementById(`trans-text-${index}`);
+                return {
+                    ...seg,
+                    translated_text: textarea ? textarea.value.trim() : (seg.translated_text || seg.text)
+                };
+            });
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${document.getElementById("output-name").value.replace(".mp4", "")}_script.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        // 7. Import Script JSON Handler
+        document.getElementById("btn-import-script-trigger").addEventListener("click", () => {
+            document.getElementById("file-import-script").click();
+        });
+
+        document.getElementById("file-import-script").addEventListener("change", (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (!Array.isArray(imported)) {
+                        alert("Invalid format: imported script must be an array of segments.");
+                        return;
+                    }
+                    if (imported.length > 0 && (imported[0].start_time === undefined || imported[0].text === undefined)) {
+                        alert("Invalid segment data structure.");
+                        return;
+                    }
+                    originalSegments = imported;
+                    displayEditor(originalSegments, [], allVoiceObjects);
+                    alert("Script imported successfully!");
+                } catch (err) {
+                    alert(`Error parsing JSON: ${err.message}`);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = "";
+        });
+
+        // 8. Find and Replace Handler
+        document.getElementById("btn-apply-replace").addEventListener("click", () => {
+            const findText = document.getElementById("find-input").value;
+            const replaceText = document.getElementById("replace-input").value;
+            if (!findText) {
+                alert("Please enter find query text.");
+                return;
+            }
+            let count = 0;
+            originalSegments.forEach((seg, index) => {
+                const textarea = document.getElementById(`trans-text-${index}`);
+                if (textarea) {
+                    const originalVal = textarea.value;
+                    const escaped = findText.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                    const regex = new RegExp(escaped, 'g');
+                    const newVal = originalVal.replace(regex, replaceText);
+                    if (originalVal !== newVal) {
+                        textarea.value = newVal;
+                        count++;
+                        const validationLabel = textarea.closest("td").querySelector("div:last-child");
+                        updateValidation(textarea, seg.start_time, seg.end_time, validationLabel);
+                    }
+                }
+            });
+            calculateTotalEstimatedCost();
+            updateWordCount();
+            alert(`Find and Replace completed: updated ${count} occurrences.`);
+        });
+
+        // 9. Accent Color theme selector
+        const accentColors = {
+            purple: { purple: "#8f55fd", indigo: "#4f46e5", glow: "rgba(143, 85, 253, 0.25)" },
+            indigo: { purple: "#4f46e5", indigo: "#3b82f6", glow: "rgba(79, 70, 229, 0.25)" },
+            emerald: { purple: "#10b981", indigo: "#059669", glow: "rgba(16, 185, 129, 0.25)" },
+            rose: { purple: "#f43f5e", indigo: "#be123c", glow: "rgba(244, 63, 94, 0.25)" },
+            amber: { purple: "#f59e0b", indigo: "#d97706", glow: "rgba(245, 158, 11, 0.25)" }
+        };
+        
+        document.getElementById("accent-color-select").addEventListener("change", (e) => {
+            const colors = accentColors[e.target.value];
+            if (colors) {
+                document.documentElement.style.setProperty("--accent-purple", colors.purple);
+                document.documentElement.style.setProperty("--accent-indigo", colors.indigo);
+                document.documentElement.style.setProperty("--glow-purple", colors.glow);
+            }
+        });
+
+        // 10. Subtitle Font Size slider range value indicator
+        document.getElementById("sub-fontsize").addEventListener("input", (e) => {
+            document.getElementById("sub-fontsize-val").innerText = `${e.target.value}px`;
+        });
+
+        // 11. Bulk Reset translations back to original
+        document.getElementById("btn-bulk-reset").addEventListener("click", () => {
+            if (!originalSegments || originalSegments.length === 0) return;
+            if (!confirm("Are you sure you want to reset all translations back to default?")) return;
+            originalSegments.forEach((seg, index) => {
+                const textarea = document.getElementById(`trans-text-${index}`);
+                if (textarea) {
+                    textarea.value = seg.translated_text || seg.text;
+                    const validationLabel = textarea.closest("td").querySelector("div:last-child");
+                    updateValidation(textarea, seg.start_time, seg.end_time, validationLabel);
+                }
+            });
+            calculateTotalEstimatedCost();
+            updateWordCount();
+            alert("All translations have been reset to default.");
+        });
+
+        // 12. Export script CSV handler
+        document.getElementById("btn-export-csv").addEventListener("click", () => {
+            if (!originalSegments || originalSegments.length === 0) {
+                alert("No segments to export. Please process a video first.");
+                return;
+            }
+            let csvContent = "\uFEFF"; // UTF-8 BOM
+            csvContent += "Start Time,End Time,Speaker,Original Speech,Translated Speech,Voice\n";
+            originalSegments.forEach((seg, index) => {
+                const textarea = document.getElementById(`trans-text-${index}`);
+                const transVal = textarea ? textarea.value.trim() : (seg.translated_text || seg.text);
+                const row = [
+                    seg.start_time,
+                    seg.end_time,
+                    `"${seg.speaker.replace(/"/g, '""')}"`,
+                    `"${seg.text.replace(/"/g, '""')}"`,
+                    `"${transVal.replace(/"/g, '""')}"`,
+                    `"${(speakerVoices[seg.speaker] || "").replace(/"/g, '""')}"`
+                ];
+                csvContent += row.join(",") + "\n";
+            });
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${document.getElementById("output-name").value.replace(".mp4", "")}_script.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        // ===== NEW FEATURES (13 - 27+) =====
+
+        // 13. Keyboard Shortcuts
+        document.addEventListener("keydown", (e) => {
+            // Ctrl+Enter: Submit edits
+            if (e.ctrlKey && e.key === "Enter") {
+                e.preventDefault();
+                const submitBtn = document.getElementById("btn-submit-edits");
+                if (submitBtn && !document.getElementById("card-editor").classList.contains("hidden")) {
+                    submitBtn.click();
+                }
+            }
+            // Ctrl+S: Export JSON
+            if (e.ctrlKey && !e.shiftKey && e.key === "s") {
+                e.preventDefault();
+                document.getElementById("btn-export-script").click();
+            }
+            // Ctrl+Shift+S: Save Draft
+            if (e.ctrlKey && e.shiftKey && e.key === "S") {
+                e.preventDefault();
+                saveDraft();
+            }
+            // Escape: Close modals
+            if (e.key === "Escape") {
+                document.querySelectorAll(".modal").forEach(m => m.classList.add("hidden"));
+            }
+            // Ctrl+F: Focus find input
+            if (e.ctrlKey && e.key === "f" && !document.getElementById("card-editor").classList.contains("hidden")) {
+                e.preventDefault();
+                document.getElementById("find-input").focus();
+            }
+            // F11: Fullscreen editor
+            if (e.key === "F11") {
+                e.preventDefault();
+                toggleFullscreenEditor();
+            }
+            // Ctrl+/: Show shortcuts
+            if (e.ctrlKey && e.key === "/") {
+                e.preventDefault();
+                document.getElementById("shortcuts-modal").classList.remove("hidden");
+            }
+            // Ctrl+Z: Undo last textarea edit
+            if (e.ctrlKey && e.key === "z" && !e.shiftKey) {
+                if (undoStack.length > 0 && document.activeElement.tagName !== "TEXTAREA") {
+                    const last = undoStack.pop();
+                    const textarea = document.getElementById(`trans-text-${last.index}`);
+                    if (textarea) {
+                        textarea.value = last.value;
+                    }
+                }
+            }
+        });
+
+        // 14. Fullscreen editor toggle
+        function toggleFullscreenEditor() {
+            const editor = document.getElementById("card-editor");
+            const btn = document.getElementById("btn-fullscreen-editor");
+            editor.classList.toggle("fullscreen-editor");
+            if (editor.classList.contains("fullscreen-editor")) {
+                btn.innerHTML = `<i class="fa-solid fa-compress"></i>`;
+            } else {
+                btn.innerHTML = `<i class="fa-solid fa-expand"></i>`;
+            }
+        }
+        document.getElementById("btn-fullscreen-editor").addEventListener("click", toggleFullscreenEditor);
+
+        // 15. Auto-save draft to localStorage every 30 seconds
+        function saveDraft() {
+            if (!originalSegments || originalSegments.length === 0) return;
+            const draft = originalSegments.map((seg, index) => {
+                const textarea = document.getElementById(`trans-text-${index}`);
+                return {
+                    ...seg,
+                    translated_text: textarea ? textarea.value : (seg.translated_text || seg.text)
+                };
+            });
+            localStorage.setItem("dubber_draft", JSON.stringify(draft));
+            localStorage.setItem("dubber_draft_time", new Date().toLocaleString());
+            console.log("[Auto-save] Draft saved.");
+        }
+        
+        document.getElementById("btn-auto-save").addEventListener("click", () => {
+            saveDraft();
+            alert("Draft saved to browser storage!");
+        });
+
+        function startAutoSaveTimer() {
+            setInterval(() => {
+                if (originalSegments && originalSegments.length > 0 && !document.getElementById("card-editor").classList.contains("hidden")) {
+                    saveDraft();
+                }
+            }, 30000);
+        }
+
+        // 16. Restore draft from localStorage
+        document.getElementById("btn-restore-draft").addEventListener("click", () => {
+            const draft = localStorage.getItem("dubber_draft");
+            const draftTime = localStorage.getItem("dubber_draft_time");
+            if (!draft) {
+                alert("No saved draft found.");
+                return;
+            }
+            if (!confirm(`Restore draft from ${draftTime}? This will overwrite current translations.`)) return;
+            try {
+                const segments = JSON.parse(draft);
+                originalSegments = segments;
+                // Restore text values
+                segments.forEach((seg, index) => {
+                    const textarea = document.getElementById(`trans-text-${index}`);
+                    if (textarea) {
+                        textarea.value = seg.translated_text || seg.text;
+                    }
+                });
+                alert("Draft restored successfully!");
+                updateWordCount();
+                calculateTotalEstimatedCost();
+            } catch (e) {
+                alert(`Failed to restore draft: ${e.message}`);
+            }
+        });
+
+        // 17. Select All / Deselect All
+        document.getElementById("chk-select-all").addEventListener("change", (e) => {
+            document.querySelectorAll(".segment-checkbox").forEach(chk => chk.checked = e.target.checked);
+            document.getElementById("chk-header-select-all").checked = e.target.checked;
+        });
+        document.getElementById("chk-header-select-all").addEventListener("change", (e) => {
+            document.querySelectorAll(".segment-checkbox").forEach(chk => chk.checked = e.target.checked);
+            document.getElementById("chk-select-all").checked = e.target.checked;
+        });
+
+        // 18. Batch Speaker Reassign
+        document.getElementById("btn-batch-reassign").addEventListener("click", () => {
+            const selectedIndices = [];
+            document.querySelectorAll(".segment-checkbox:checked").forEach(chk => {
+                selectedIndices.push(parseInt(chk.dataset.index));
+            });
+            if (selectedIndices.length === 0) {
+                alert("Please select at least one segment to reassign.");
+                return;
+            }
+            const speakers = [...new Set(originalSegments.map(s => s.speaker))];
+            const newSpeaker = prompt(`Reassign ${selectedIndices.length} segments to which speaker?\n\nAvailable: ${speakers.join(", ")}`);
+            if (!newSpeaker) return;
+            selectedIndices.forEach(idx => {
+                if (originalSegments[idx]) {
+                    originalSegments[idx].speaker = newSpeaker;
+                }
+            });
+            // Re-render editor
+            const allSpeakers = [...new Set(originalSegments.map(s => s.speaker))];
+            displayEditor(originalSegments, allSpeakers, allVoiceObjects);
+            alert(`Reassigned ${selectedIndices.length} segments to "${newSpeaker}".`);
+        });
+
+        // 19. Merge Short Segments (<1 second)
+        document.getElementById("btn-merge-short").addEventListener("click", () => {
+            if (!originalSegments || originalSegments.length < 2) return;
+            const merged = [];
+            let i = 0;
+            while (i < originalSegments.length) {
+                const seg = { ...originalSegments[i] };
+                const duration = seg.end_time - seg.start_time;
+                if (duration < 1.0 && i + 1 < originalSegments.length) {
+                    // Merge with next segment
+                    const next = originalSegments[i + 1];
+                    seg.end_time = next.end_time;
+                    seg.text += " " + next.text;
+                    seg.translated_text = (seg.translated_text || seg.text) + " " + (next.translated_text || next.text);
+                    i += 2;
+                } else {
+                    i++;
+                }
+                merged.push(seg);
+            }
+            const mergedCount = originalSegments.length - merged.length;
+            originalSegments = merged;
+            const allSpeakers = [...new Set(originalSegments.map(s => s.speaker))];
+            displayEditor(originalSegments, allSpeakers, allVoiceObjects);
+            alert(`Merged ${mergedCount} short segments. Now ${merged.length} total.`);
+        });
+
+        // 20. Split Long Segments (>15 seconds)
+        document.getElementById("btn-split-long").addEventListener("click", () => {
+            if (!originalSegments || originalSegments.length === 0) return;
+            const result = [];
+            originalSegments.forEach(seg => {
+                const duration = seg.end_time - seg.start_time;
+                if (duration > 15.0) {
+                    const text = seg.translated_text || seg.text;
+                    const sentences = text.split(/(?<=[.!?])\s+/);
+                    if (sentences.length > 1) {
+                        const timePerChar = duration / text.length;
+                        let currentStart = seg.start_time;
+                        sentences.forEach(sentence => {
+                            const sentDuration = sentence.length * timePerChar;
+                            result.push({
+                                ...seg,
+                                start_time: currentStart,
+                                end_time: Math.min(currentStart + sentDuration, seg.end_time),
+                                text: sentence,
+                                translated_text: sentence
+                            });
+                            currentStart += sentDuration;
+                        });
+                    } else {
+                        // Split in half
+                        const midTime = seg.start_time + duration / 2;
+                        const words = text.split(/\s+/);
+                        const midWord = Math.floor(words.length / 2);
+                        result.push({ ...seg, end_time: midTime, text: words.slice(0, midWord).join(" "), translated_text: words.slice(0, midWord).join(" ") });
+                        result.push({ ...seg, start_time: midTime, text: words.slice(midWord).join(" "), translated_text: words.slice(midWord).join(" ") });
+                    }
+                } else {
+                    result.push(seg);
+                }
+            });
+            const splitCount = result.length - originalSegments.length;
+            originalSegments = result;
+            const allSpeakers = [...new Set(originalSegments.map(s => s.speaker))];
+            displayEditor(originalSegments, allSpeakers, allVoiceObjects);
+            alert(`Split ${splitCount} long segments. Now ${result.length} total.`);
+        });
+
+        // 21. Session History save
+        function saveSessionHistory() {
+            const history = JSON.parse(localStorage.getItem("dubber_session_history") || "[]");
+            history.push({
+                url: document.getElementById("youtube-url").value,
+                output_name: document.getElementById("output-name").value,
+                target_language: document.getElementById("target-language").value,
+                segments_count: originalSegments.length,
+                date: new Date().toLocaleString()
+            });
+            // Keep last 20 sessions
+            if (history.length > 20) history.splice(0, history.length - 20);
+            localStorage.setItem("dubber_session_history", JSON.stringify(history));
+        }
+    </script>
+
+</body>
+</html>

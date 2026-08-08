@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Generated AutoDub files
+temp/
+temp_dubbing/
+cache_dubbing/
+static/outputs/
+
+# Media files
+*.mp4
+*.mp3
+*.wav
+*.webm
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
