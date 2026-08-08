@@ -1,13 +1,13 @@
-.git
+.env
 .venv
 __pycache__
 *.pyc
-.env
+.git
+.gitignore
 temp/
 temp_dubbing/
 cache_dubbing/
 static/outputs/
 *.mp4
-*.mp3
 *.wav
-*.webm
+*.mp3
