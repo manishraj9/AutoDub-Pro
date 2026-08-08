@@ -1,9 +1,1 @@
-services:
-  - type: web
-    name: autodub-pro
-    runtime: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: python main.py --web --port $PORT
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.9
+services:- type: web  name: autodub-pro  runtime: python  buildCommand: curl -fsSL https://deno.land/install.sh | sh && export PATH="$HOME/.deno/bin:$PATH" && pip install -r requirements.txt  startCommand: export PATH="$HOME/.deno/bin:$PATH" && python main.py --web --port $PORT  envVars:  - key: PYTHON_VERSION    value: 3.11.9
