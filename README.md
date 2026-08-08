@@ -20,7 +20,16 @@
 - **Hybrid Acoustic Pitch & Timbre Diarization**: Combines F0 pitch autocorrelation (Male < 165Hz, Female >= 165Hz) with Gemini dialogue context analysis to cleanly separate 3+ distinct speakers into Male and Female profiles.
 - **Cinematic Localization Engine**: Translates foreign dialogue into idiomatic, natural spoken language suitable for professional dubbing and voice acting.
 
+
+
 ---
+
+<img width="1891" height="822" alt="Screenshot 2026-08-08 162535" src="https://github.com/user-attachments/assets/6907647e-f264-402c-aaa1-4fcf3ad63ad9" />
+<img width="1022" height="761" alt="Screenshot 2026-08-08 153143" src="https://github.com/user-attachments/assets/07101e79-876c-46f9-925e-a6d80466a78b" />
+<img width="733" height="828" alt="Screenshot 2026-08-08 153227" src="https://github.com/user-attachments/assets/3ef1bca0-0277-421e-9c55-903ecf5be0d5" />
+
+
+
 
 ## 🏗️ Architecture & Pipeline Flow
 
