@@ -283,6 +283,127 @@ async def download_audio(filename: str = Query(..., description="Target video fi
     if os.path.exists(wav_path):
         return FileResponse(wav_path, media_type="audio/mpeg", filename=os.path.basename(wav_path))
     return JSONResponse(content={"error": "Audio file not found"}, status_code=404)
+@app.post("/api/download-youtube")
+async def download_youtube_endpoint(data: dict):
+    """
+    Downloads a YouTube video through the Render backend
+    and returns the audio file.
+    """
+    url = data.get("url")
+
+    if not url:
+        return JSONResponse(
+            content={
+                "success": False,
+                "error": "YouTube URL is required"
+            },
+            status_code=400
+        )
+
+    try:
+        print(f"[Info] Downloading YouTube URL: {url}")
+
+        video_path, audio_path = download_youtube_video(
+            url,
+            TEMP_DIR,
+            quality="720p"
+        )
+
+        if not os.path.exists(audio_path):
+            return JSONResponse(
+                content={
+                    "success": False,
+                    "error": "Audio download failed"
+                },
+                status_code=500
+            )
+
+        return FileResponse(
+            audio_path,
+            media_type="audio/wav",
+            filename=os.path.basename(audio_path)
+        )
+
+    except Exception as e:
+        print(f"[Error] YouTube download failed: {e}")
+
+        return JSONResponse(
+            content={
+                "success": False,
+                "error": str(e)
+            },
+            status_code=500
+        )
+
+    @app.post("/api/download-youtube")
+    async def download_youtube_endpoint(data: dict):
+       """
+        Downloads a YouTube video through the Render backend
+        and returns the audio file.
+        """
+    url = data.get("url")
+
+    if not url:
+        return JSONResponse(
+            content={
+                "success": False,
+                "error": "YouTube URL is required"
+            },
+            status_code=400
+        )
+
+    try:
+        print(f"[Info] Downloading YouTube URL: {url}")
+
+        video_path, audio_path = download_youtube_video(
+            url,
+            TEMP_DIR,
+            quality="720p"
+        )
+
+        if not os.path.exists(audio_path):
+            return JSONResponse(
+                content={
+                    "success": False,
+                    "error": "Audio download failed"
+                },
+                status_code=500
+            )
+
+        return FileResponse(
+            audio_path,
+            media_type="audio/wav",
+            filename=os.path.basename(audio_path)
+        )
+
+    except Exception as e:
+        print(f"[Error] YouTube download failed: {e}")
+
+        return JSONResponse(
+            content={
+                "success": False,
+                "error": str(e)
+            },
+            status_code=500
+        )
+
+
+        return FileResponse(
+            audio_path,
+            media_type="audio/wav",
+            filename=os.path.basename(audio_path)
+        )
+
+    except Exception as e:
+        print(f"[Error] YouTube download failed: {e}")
+
+        return JSONResponse(
+            content={
+                "success": False,
+                "error": str(e)
+            },
+            status_code=500
+        )
 
 def run_phase_1(video_url: str, model: str, audio_mode: str, duck_level: float, output_filename: str, 
                 use_cache: bool, burn_subtitles: bool, compress_video: bool, crf_value: int,
