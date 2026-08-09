@@ -1,6 +1,7 @@
 # ============================================================
 # Stage 1: Build bgutil PO-token server
 # ============================================================
+
 FROM node:25-bookworm-slim AS bgutil-build
 
 WORKDIR /opt/bgutil
@@ -16,10 +17,10 @@ COPY bgutil-ytdlp-pot-provider/server/src ./src
 
 RUN npx tsc
 
-
 # ============================================================
 # Stage 2: AutoDub-Pro
 # ============================================================
+
 FROM node:25-bookworm-slim
 
 # Python + FFmpeg + build dependencies
