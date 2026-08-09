@@ -32,6 +32,7 @@ RUN apt-get update && apt-get install -y \
     g++ \
     libsndfile1 \
     curl \
+    unzip \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Deno
