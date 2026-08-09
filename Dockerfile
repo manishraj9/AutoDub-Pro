@@ -49,7 +49,9 @@ ENV PATH="/opt/venv/bin:${PATH}"
 
 # Python dependencies
 COPY requirements.txt .
-RUN /opt/venv/bin/python -m pip install --no-cache-dir -r requirements.txt
+RUN /opt/venv/bin/python -m pip install --upgrade pip && \
+    /opt/venv/bin/python -m pip install --no-cache-dir -r requirements.txt && \
+    /opt/venv/bin/python -m pip show python-dotenv
 
 # Application
 COPY . .
