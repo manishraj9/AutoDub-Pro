@@ -49,13 +49,14 @@ ENV PATH="/opt/venv/bin:${PATH}"
 
 # Python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN /opt/venv/bin/python -m pip install --no-cache-dir -r requirements.txt
 
 # Application
 COPY . .
 
 # Compiled bgutil server
 COPY --from=bgutil-build /opt/bgutil/build /opt/bgutil/build
+COPY --from=bgutil-build /opt/bgutil/node_modules /opt/bgutil/node_modules
 
 ENV PORT=8000
 
