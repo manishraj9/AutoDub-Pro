@@ -5,7 +5,7 @@
 [![Google Gemini API](https://img.shields.io/badge/Powered%20By-Google%20Gemini-orange.svg)](https://ai.google.dev/)
 [![Edge-TTS](https://img.shields.io/badge/TTS-Microsoft%20Edge--TTS-green.svg)](https://github.com/rany2/edge-tts)
 
-**Free, Open-Source AI Video Dubbing & Voice Translation Platform** — Powered by Google Gemini, Microsoft Edge-TTS, and Acoustic Vocal Isolation. Built for **Idealabs Digital**.
+**Free, Open-Source AI Video Dubbing & Voice Translation Platform** — Powered by Google Gemini, Microsoft Edge-TTS, and Acoustic Vocal Isolation. 
 
 > ⚠️ **Project Status Note**: **Edge-TTS** is 100% fully functional, battle-tested, and recommended for production use. Secondary engines (**F5-TTS** and custom voice cloning models) are currently under active experimental development as the project is continuously updating.
 >
