@@ -90,7 +90,7 @@
             <section class="panel config-panel">
                 <div class="card glass-card">
                     <h2><i class="fa-solid fa-sliders icon"></i> 1. Setup & Configure</h2>
-                    
+
                     <div class="form-group">
                         <label for="youtube-url">YouTube URL</label>
                         <div class="input-with-icon">
@@ -235,7 +235,7 @@
                             <span><i class="fa-solid fa-circle-nodes"></i> Advanced Audio & Subtitle EQ</span>
                             <i class="fa-solid fa-chevron-down arrow-icon" id="advanced-arrow"></i>
                         </button>
-                        
+
                         <div class="dropdown-content hidden" id="advanced-content">
                             <!-- 3-Band EQ Sliders -->
                             <div class="eq-container">
@@ -310,7 +310,7 @@
                                 </div>
                                 <small class="help-text">Lower numbers produce higher visual quality (e.g. 18-28).</small>
                             </div>
-                            
+
                             <!-- Subtitles Style Customizer -->
                             <div class="form-group margin-top-1">
                                 <label>Subtitle Custom Styles</label>
@@ -352,7 +352,7 @@
                                 <textarea id="pronunciation-dict" placeholder="Format: word->replacement (one per line, e.g. AI->A.I.)" style="width: 100%; height: 60px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); color: #fff; border-radius: 6px; padding: 0.5rem; font-family: monospace; font-size: 11px; resize: vertical; outline: none;"></textarea>
                                 <small class="help-text">Replace phrases/acronyms before speech synthesis.</small>
                             </div>
-                            
+
                             <!-- Reset Settings Button -->
                             <button type="button" id="btn-reset-config" class="btn-small" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25); color: #f87171; width: 100%; justify-content: center; padding: 0.6rem; margin-top: 5px;">
                                 <i class="fa-solid fa-arrow-rotate-left"></i> Reset to Defaults
@@ -377,7 +377,7 @@
                 <!-- Live Progress Card -->
                 <div class="card glass-card progress-card hidden" id="card-progress">
                     <h2><i class="fa-solid fa-wave-square icon-pulse"></i> Pipeline Progress</h2>
-                    
+
                     <div class="progress-bar-container">
                         <div class="progress-bar" id="pipeline-progress-bar" style="width: 0%;"></div>
                     </div>
@@ -455,7 +455,7 @@
                             </button>
                         </div>
                     </div>
-                    
+
                     <!-- Video Preview Block -->
                     <div class="video-preview-block">
                         <img src="" alt="Thumbnail" id="editor-video-thumbnail">
@@ -464,12 +464,12 @@
                             <p>Translate segments and choose voices for each speaker below.</p>
                         </div>
                     </div>
-                    
+
                     <!-- Voice settings -->
                     <div class="voice-mappings" id="voice-mapping-area">
                         <!-- Will be populated dynamically -->
                     </div>
-                    
+
                     <!-- Voice presets manager -->
                     <div class="voice-presets-container" style="margin-top: 15px; padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);">
                         <h4 style="margin: 0 0 8px 0; font-size: 13px; font-weight: 600; color: #10b981;"><i class="fa-solid fa-floppy-disk"></i> Voice Presets Manager</h4>
@@ -480,7 +480,7 @@
                             <button id="btn-delete-preset" class="btn-small" style="padding: 6px 12px; font-size: 11px; background: #ef4444; border: none; border-radius: 4px; color: #fff; cursor: pointer;"><i class="fa-solid fa-trash-can"></i> Delete</button>
                         </div>
                     </div>
-                    
+
                     <!-- Batch Operations Bar -->
                     <div style="display: flex; gap: 8px; margin-top: 15px; margin-bottom: 8px; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); align-items: center; flex-wrap: wrap;">
                         <label class="checkbox-container" style="font-size: 12px; color: var(--text-secondary); margin: 0; padding-left: 24px; cursor: pointer;">
@@ -523,7 +523,7 @@
                 <!-- Output Player Card -->
                 <div class="card glass-card player-card hidden" id="card-player">
                     <h2><i class="fa-solid fa-circle-play icon"></i> 3. Dubbed Output Player</h2>
-                    
+
                     <div class="video-wrapper">
                         <video id="output-video-player" controls>
                             <source src="" type="video/mp4">
@@ -597,7 +597,7 @@
         const consoleLogs = document.getElementById("console-logs");
         const ttsEngine = document.getElementById("tts-engine");
         const elevenKeyGroup = document.getElementById("eleven-key-group");
-        
+
         // Advanced & EQ Sliders
         const btnToggleAdvanced = document.getElementById("btn-toggle-advanced");
         const advancedContent = document.getElementById("advanced-content");
@@ -617,7 +617,7 @@
         eqHigh.addEventListener("input", (e) => document.getElementById("eq-high-val").innerText = `${e.target.value} dB`);
         noiseGate.addEventListener("input", (e) => document.getElementById("noise-gate-val").innerText = `${e.target.value} dBFS`);
         crfSlider.addEventListener("input", (e) => document.getElementById("crf-val").innerText = e.target.value);
-        
+
         // Volume slider value updates
         document.getElementById("tts-volume").addEventListener("input", (e) => document.getElementById("tts-volume-val").innerText = `${e.target.value} dB`);
         document.getElementById("bg-volume").addEventListener("input", (e) => document.getElementById("bg-volume-val").innerText = `${e.target.value} dB`);
@@ -631,7 +631,7 @@
         modalClose.addEventListener("click", () => statusModal.classList.add("hidden"));
         document.getElementById("shortcuts-close-btn").addEventListener("click", () => document.getElementById("shortcuts-modal").classList.add("hidden"));
         document.getElementById("history-close-btn").addEventListener("click", () => document.getElementById("history-modal").classList.add("hidden"));
-        
+
         window.addEventListener("click", (e) => {
             if (e.target === statusModal) statusModal.classList.add("hidden");
             if (e.target === document.getElementById("shortcuts-modal")) document.getElementById("shortcuts-modal").classList.add("hidden");
@@ -671,16 +671,16 @@
             statusModal.classList.remove("hidden");
             modalTitle.innerText = "Gemini API Keys Benchmark & Latency Test";
             modalBody.innerHTML = `<div class="modal-loading"><i class="fa-solid fa-spinner fa-spin"></i> Benchmarking Gemini keys...</div>`;
-            
+
             try {
                 const response = await fetch("/api/benchmark-keys");
                 const data = await response.json();
-                
+
                 if (!data.configured) {
                     modalBody.innerHTML = `<div class="alert-error-box"><i class="fa-solid fa-triangle-exclamation"></i> No Gemini keys configured. Please add them to your .env file.</div>`;
                     return;
                 }
-                
+
                 let listHtml = `<ul class="modal-keys-list">`;
                 data.keys.forEach(k => {
                     const is_ok = k.status === "valid";
@@ -698,7 +698,7 @@
         // Clear Cache action
         document.getElementById("btn-clear-cache-top").addEventListener("click", async () => {
             if (!confirm("Are you sure you want to clear the local translation cache?")) return;
-            
+
             try {
                 const response = await fetch("/api/clear-cache");
                 const data = await response.json();
@@ -766,7 +766,7 @@
             const modal = document.getElementById("history-modal");
             const body = document.getElementById("history-body");
             const history = JSON.parse(localStorage.getItem("dubber_session_history") || "[]");
-            
+
             if (history.length === 0) {
                 body.innerHTML = `<p style="color: var(--text-secondary); text-align: center; padding: 20px;">No previous sessions found.</p>`;
             } else {
@@ -787,7 +787,7 @@
                 });
                 html += '</div>';
                 body.innerHTML = html;
-                
+
                 body.querySelectorAll(".history-reload-btn").forEach(btn => {
                     btn.addEventListener("click", () => {
                         const url = btn.getAttribute("data-url");
@@ -805,8 +805,8 @@
         document.getElementById("btn-scroll-lock").addEventListener("click", () => {
             autoScrollEnabled = !autoScrollEnabled;
             const btn = document.getElementById("btn-scroll-lock");
-            btn.innerHTML = autoScrollEnabled 
-                ? '<i class="fa-solid fa-lock"></i> Auto-scroll' 
+            btn.innerHTML = autoScrollEnabled
+                ? '<i class="fa-solid fa-lock"></i> Auto-scroll'
                 : '<i class="fa-solid fa-lock-open"></i> Scroll-free';
         });
 
@@ -820,12 +820,12 @@
         function connectWebSocket() {
             const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
             const wsUrl = `${protocol}//${window.location.host}/ws/progress`;
-            
+
             ws = new WebSocket(wsUrl);
-            
+
             ws.onmessage = (event) => {
                 const data = JSON.parse(event.data);
-                
+
                 if (data.log) {
                     appendLog(data.log, data.type);
                     // Track synthesis progress for ETA
@@ -838,7 +838,7 @@
                         }
                     }
                 }
-                
+
                 if (data.step_status) {
                     updateStepStatus(data.step_status.step, data.step_status.status);
                     if (data.step_status.step === "synthesize" && data.step_status.status === "active") {
@@ -847,15 +847,15 @@
                         document.getElementById("eta-badge").style.display = "inline-flex";
                     }
                 }
-                
+
                 if (data.progress !== undefined) {
                     document.getElementById("pipeline-progress-bar").style.width = `${data.progress}%`;
                 }
-                
+
                 if (data.status_text) {
                     document.getElementById("pipeline-status-text").innerText = data.status_text;
                 }
-                
+
                 // When transcription and translation is ready for editing
                 if (data.event === "EDITING_READY") {
                     originalSegments = data.segments;
@@ -863,28 +863,28 @@
                     allVoiceObjects = data.available_voices || [];
                     currentTargetLocale = data.target_locale || "en";
                     currentTargetLanguage = data.target_language || "English";
-                    
+
                     // Show detected language badge
                     if (data.detected_language) {
                         const langBadge = document.getElementById("detected-lang-badge");
                         langBadge.innerHTML = `<i class="fa-solid fa-language"></i> Source: ${data.detected_language}`;
                         langBadge.style.display = "inline-flex";
                     }
-                    
+
                     // Show thumbnail image fetched
                     if (data.thumbnail_url) {
                         const img = document.getElementById("editor-video-thumbnail");
                         img.src = data.thumbnail_url;
                         img.classList.remove("hidden");
                     }
-                    
+
                     document.getElementById("video-preview-title").innerText = document.getElementById("output-name").value;
                     displayEditor(data.segments, data.speakers, allVoiceObjects);
-                    
+
                     // Save to session history
                     saveSessionHistory();
                 }
-                
+
                 // When entire process completes
                 if (data.event === "PIPELINE_COMPLETE") {
                     displayPlayer(data.output_url);
@@ -909,7 +909,7 @@
             if (type === "error") line.classList.add("error-msg");
             if (type === "success") line.classList.add("success-msg");
             if (type === "system") line.classList.add("system-msg");
-            
+
             line.innerText = message;
             consoleLogs.appendChild(line);
             if (autoScrollEnabled) {
@@ -920,9 +920,9 @@
         function updateStepStatus(stepId, status) {
             const el = document.getElementById(`step-${stepId}`);
             if (!el) return;
-            
+
             el.className = status;
-            
+
             if (status === "active") {
                 el.querySelector("i").className = "fa-solid fa-spinner fa-spin";
             } else if (status === "completed") {
@@ -970,54 +970,61 @@
             resetSteps();
             consoleLogs.innerHTML = "";
             appendLog("[System] Establishing connection...", "system");
-            
+
             // Re-establish socket
             if (ws && ws.readyState === WebSocket.OPEN) {
                 ws.close();
             }
             connectWebSocket();
 
-            // Wait brief moment for WS to connect
-            setTimeout(() => {
-                if (ws && ws.readyState === WebSocket.OPEN) {
-                    btnStart.disabled = true;
-                    btnStart.querySelector(".btn-text").innerText = "Processing...";
-                    btnStart.querySelector(".btn-spinner").classList.remove("hidden");
-                    
-                    document.getElementById("card-progress").classList.remove("hidden");
-                    document.getElementById("card-welcome").classList.remove("hidden");
-                    document.getElementById("card-editor").classList.add("hidden");
-                    document.getElementById("card-player").classList.add("hidden");
+            const waitForWebSocket = () => {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        btnStart.disabled = true;
+        btnStart.querySelector(".btn-text").innerText = "Processing...";
+        btnStart.querySelector(".btn-spinner").classList.remove("hidden");
 
-                    const config = {
-                        url: url,
-                        model: document.getElementById("transcription-model").value,
-                        output_name: document.getElementById("output-name").value,
-                        mode: dubbingMode.value,
-                        duck_level: parseFloat(duckLevelInput.value),
-                        target_language: document.getElementById("target-language").value,
-                        download_quality: document.getElementById("download-quality").value,
-                        
-                        // Quality flags
-                        use_cache: document.getElementById("chk-use-cache").checked,
-                        burn_subtitles: document.getElementById("chk-burn-subs").checked,
-                        waveform_overlay: document.getElementById("chk-waveform").checked,
-                        compress_video: chkCompress.checked,
-                        crf_value: parseInt(crfSlider.value),
-                        
-                        // EQ levels
-                        eq_low: parseFloat(eqLow.value),
-                        eq_mid: parseFloat(eqMid.value),
-                        eq_high: parseFloat(eqHigh.value),
-                        noise_gate: parseFloat(noiseGate.value)
-                    };
-                    
-                    // Send message to initiate pipeline
-                    ws.send(JSON.stringify({ action: "start_pipeline", config: config }));
-                } else {
-                    alert("Unable to establish progress server channel. Please try again.");
-                }
-            }, 500);
+        document.getElementById("card-progress").classList.remove("hidden");
+        document.getElementById("card-welcome").classList.remove("hidden");
+        document.getElementById("card-editor").classList.add("hidden");
+        document.getElementById("card-player").classList.add("hidden");
+
+        const config = {
+            url: url,
+            model: document.getElementById("transcription-model").value,
+            output_name: document.getElementById("output-name").value,
+            mode: dubbingMode.value,
+            duck_level: parseFloat(duckLevelInput.value),
+            target_language: document.getElementById("target-language").value,
+            download_quality: document.getElementById("download-quality").value,
+
+            use_cache: document.getElementById("chk-use-cache").checked,
+            burn_subtitles: document.getElementById("chk-burn-subs").checked,
+            waveform_overlay: document.getElementById("chk-waveform").checked,
+            compress_video: chkCompress.checked,
+            crf_value: parseInt(crfSlider.value),
+
+            eq_low: parseFloat(eqLow.value),
+            eq_mid: parseFloat(eqMid.value),
+            eq_high: parseFloat(eqHigh.value),
+            noise_gate: parseFloat(noiseGate.value)
+        };
+
+        ws.send(JSON.stringify({
+            action: "start_pipeline",
+            config: config
+        }));
+
+    } else if (ws && ws.readyState === WebSocket.CONNECTING) {
+        setTimeout(waitForWebSocket, 100);
+    } else {
+        alert("Unable to establish progress server channel. Please try again.");
+    }
+};
+
+waitForWebSocket();
+
+
+
         });
 
         // Helper: filter voices by locale
@@ -1033,7 +1040,7 @@
         function displayEditor(segments, speakers, availableVoices) {
             document.getElementById("card-welcome").classList.add("hidden");
             document.getElementById("card-editor").classList.remove("hidden");
-            
+
             // Update human verification step status
             updateStepStatus("edit", "active");
 
@@ -1072,33 +1079,33 @@
                 group.style.padding = "10px";
                 group.style.borderRadius = "8px";
                 group.style.background = "rgba(0,0,0,0.15)";
-                
+
                 const label = document.createElement("label");
                 const speakerColor = SPEAKER_COLORS[i % SPEAKER_COLORS.length];
                 label.innerHTML = `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${speakerColor};margin-right:6px;"></span>${speaker} Config`;
                 label.style.fontWeight = "600";
                 label.style.color = speakerColor;
                 label.style.marginBottom = "8px";
-                
+
                 // Search filter input
                 const searchRow = document.createElement("div");
                 searchRow.style.display = "flex";
                 searchRow.style.gap = "6px";
                 searchRow.style.marginBottom = "6px";
-                
+
                 const filterInput = document.createElement("input");
                 filterInput.type = "text";
                 filterInput.placeholder = `Filter ${currentTargetLanguage} voices...`;
                 filterInput.style.cssText = "padding: 4px 8px; font-size: 11px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #fff; flex: 1;";
-                
+
                 searchRow.appendChild(filterInput);
-                
+
                 const row = document.createElement("div");
                 row.style.display = "flex";
                 row.style.flexDirection = "column";
                 row.style.gap = "6px";
                 row.style.width = "100%";
-                
+
                 const select = document.createElement("select");
                 select.id = `voice-select-${speaker.replace(/\s+/g, '_')}`;
                 select.style.fontSize = "11px";
@@ -1107,13 +1114,13 @@
                 select.style.background = "rgba(0,0,0,0.4)";
                 select.style.border = "1px solid rgba(255,255,255,0.1)";
                 select.style.borderRadius = "4px";
-                
+
                 // Determine voice gender based on speaker name using exact suffix match
                 const speakerLower = speaker.toLowerCase();
                 const isFemale = speakerLower.includes("(female)");
                 const isMale = speakerLower.includes("(male)") && !isFemale;
                 let defaultVoice = null;
-                
+
                 if (isFemale && femaleVoices.length > 0) {
                     defaultVoice = femaleVoices[femaleIdx % femaleVoices.length];
                     femaleIdx++;
@@ -1129,7 +1136,7 @@
                         defaultVoice = voicesToUse[i % voicesToUse.length];
                     }
                 }
-                
+
                 // Populate options based on filter
                 function populateOptions(filterText = "") {
                     select.innerHTML = "";
@@ -1155,17 +1162,17 @@
                         speakerVoices[speaker] = select.options[0].value;
                     }
                 }
-                
+
                 filterInput.addEventListener("input", (e) => {
                     populateOptions(e.target.value);
                 });
-                
+
                 populateOptions();
-                
+
                 select.addEventListener("change", (e) => {
                     speakerVoices[speaker] = e.target.value;
                 });
-                
+
                 // Pitch selector
                 const pitchSelect = document.createElement("select");
                 pitchSelect.style.cssText = "font-size: 11px; padding: 5px; color: #fff; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;";
@@ -1182,7 +1189,7 @@
                 pitchSelect.addEventListener("change", (e) => {
                     speakerPitches[speaker] = e.target.value;
                 });
-                
+
                 // Speed rate selector
                 const rateSelect = document.createElement("select");
                 rateSelect.style.cssText = "font-size: 11px; padding: 5px; color: #fff; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;";
@@ -1197,19 +1204,19 @@
                 rateSelect.addEventListener("change", (e) => {
                     speakerRates[speaker] = e.target.value;
                 });
-                
+
                 // Preview Play Button
                 const btnPlay = document.createElement("button");
                 btnPlay.type = "button";
                 btnPlay.className = "btn-small";
                 btnPlay.style.cssText = "padding: 5px 10px; font-size: 11px; width: 100%; justify-content: center; background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3); color: #a78bfa; border-radius: 4px; cursor: pointer;";
                 btnPlay.innerHTML = `<i class="fa-solid fa-play"></i> Play Preview`;
-                
+
                 let audioPlayer = null;
                 btnPlay.addEventListener("click", async () => {
                     const selectedVoice = select.value;
                     if (!selectedVoice) return;
-                    
+
                     btnPlay.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Loading...`;
                     btnPlay.disabled = true;
                     try {
@@ -1237,7 +1244,7 @@
                         btnPlay.disabled = false;
                     }
                 });
-                
+
                 if (ttsEngine.value === "elevenlabs" || ttsEngine.value === "f5-tts") {
                     select.disabled = true;
                     filterInput.disabled = true;
@@ -1246,12 +1253,12 @@
                     btnPlay.disabled = true;
                     speakerVoices[speaker] = "cloned";
                 }
-                
+
                 row.appendChild(select);
                 row.appendChild(pitchSelect);
                 row.appendChild(rateSelect);
                 row.appendChild(btnPlay);
-                
+
                 group.appendChild(label);
                 group.appendChild(searchRow);
                 group.appendChild(row);
@@ -1264,7 +1271,7 @@
 
             segments.forEach((seg, index) => {
                 const tr = document.createElement("tr");
-                
+
                 // Checkbox cell
                 const tdCheck = document.createElement("td");
                 const chk = document.createElement("input");
@@ -1272,22 +1279,22 @@
                 chk.className = "segment-checkbox";
                 chk.dataset.index = index;
                 tdCheck.appendChild(chk);
-                
+
                 // Formatted Time range with duration
                 const startStr = formatTime(seg.start_time);
                 const endStr = formatTime(seg.end_time);
                 const duration = (seg.end_time - seg.start_time).toFixed(1);
-                
+
                 const tdTime = document.createElement("td");
                 tdTime.className = "time-col";
                 tdTime.innerHTML = `${startStr} - ${endStr}<br><span style="font-size:10px;color:var(--text-muted);font-weight:600;">${duration}s</span>`;
-                
+
                 // Speaker Badge with color
                 const speakerIdx = speakers ? speakers.indexOf(seg.speaker) : 0;
                 const spColor = SPEAKER_COLORS[(speakerIdx >= 0 ? speakerIdx : 0) % SPEAKER_COLORS.length];
                 const tdSpeaker = document.createElement("td");
                 tdSpeaker.innerHTML = `<span class="speaker-badge" style="border-left: 3px solid ${spColor}; padding-left: 8px;">${seg.speaker}</span>`;
-                
+
                 // Original Speech with copy button
                 const tdOrig = document.createElement("td");
                 const origWrapper = document.createElement("div");
@@ -1310,30 +1317,30 @@
                 origWrapper.appendChild(origText);
                 origWrapper.appendChild(copyBtn);
                 tdOrig.appendChild(origWrapper);
-                
+
                 // Editable translation box
                 const tdTrans = document.createElement("td");
-                
+
                 const transRow = document.createElement("div");
                 transRow.style.display = "flex";
                 transRow.style.gap = "6px";
                 transRow.style.alignItems = "start";
                 transRow.style.width = "100%";
-                
+
                 const textarea = document.createElement("textarea");
                 textarea.className = "trans-input";
                 textarea.style.flex = "1";
                 const initialVal = seg.translated_text || seg.text;
                 textarea.value = initialVal;
                 textarea.id = `trans-text-${index}`;
-                
+
                 const btnRevert = document.createElement("button");
                 btnRevert.type = "button";
                 btnRevert.className = "btn-small";
                 btnRevert.style.cssText = "padding: 0.4rem; border-radius: 4px; display: flex; align-items: center; justify-content: center; height: 34px; width: 34px;";
                 btnRevert.innerHTML = `<i class="fa-solid fa-arrow-rotate-left"></i>`;
                 btnRevert.title = "Revert to original translation";
-                
+
                 // Segment preview button
                 const btnSegPreview = document.createElement("button");
                 btnSegPreview.type = "button";
@@ -1341,7 +1348,7 @@
                 btnSegPreview.style.cssText = "padding: 0.4rem; border-radius: 4px; display: flex; align-items: center; justify-content: center; height: 34px; width: 34px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399;";
                 btnSegPreview.innerHTML = `<i class="fa-solid fa-headphones"></i>`;
                 btnSegPreview.title = "Preview this segment's TTS";
-                
+
                 btnSegPreview.addEventListener("click", async () => {
                     const voice = speakerVoices[seg.speaker];
                     if (!voice || voice === "cloned") return;
@@ -1363,46 +1370,46 @@
                         btnSegPreview.disabled = false;
                     }
                 });
-                
+
                 const validationLabel = document.createElement("div");
                 validationLabel.style.fontSize = "0.75rem";
                 validationLabel.style.marginTop = "4px";
                 validationLabel.style.display = "flex";
                 validationLabel.style.justifyContent = "space-between";
-                
+
                 btnRevert.addEventListener("click", () => {
                     textarea.value = initialVal;
                     updateValidation(textarea, seg.start_time, seg.end_time, validationLabel);
                     calculateTotalEstimatedCost();
                 });
-                
+
                 transRow.appendChild(textarea);
                 transRow.appendChild(btnSegPreview);
                 transRow.appendChild(btnRevert);
                 tdTrans.appendChild(transRow);
                 tdTrans.appendChild(validationLabel);
-                
+
                 // Initial validation run
                 updateValidation(textarea, seg.start_time, seg.end_time, validationLabel);
-                
+
                 // Listen to live edits with undo tracking
                 textarea.addEventListener("input", () => {
                     updateValidation(textarea, seg.start_time, seg.end_time, validationLabel);
                     calculateTotalEstimatedCost();
                     updateWordCount();
                 });
-                
+
                 textarea.addEventListener("focus", () => {
                     undoStack.push({ index: index, value: textarea.value });
                     if (undoStack.length > 50) undoStack.shift();
                 });
-                
+
                 tr.appendChild(tdCheck);
                 tr.appendChild(tdTime);
                 tr.appendChild(tdSpeaker);
                 tr.appendChild(tdOrig);
                 tr.appendChild(tdTrans);
-                
+
                 // Highlight row and seek player on click
                 tr.style.cursor = "pointer";
                 tr.addEventListener("click", (e) => {
@@ -1413,12 +1420,12 @@
                     if (player && player.src) {
                         player.currentTime = seg.start_time;
                         player.play();
-                        
+
                         document.querySelectorAll("#editor-table-body tr").forEach(r => r.style.backgroundColor = "");
                         tr.style.backgroundColor = "rgba(143, 85, 253, 0.15)";
                     }
                 });
-                
+
                 tbody.appendChild(tr);
             });
             calculateTotalEstimatedCost();
@@ -1506,13 +1513,13 @@
         function displayPlayer(videoUrl) {
             document.getElementById("card-welcome").classList.add("hidden");
             document.getElementById("card-player").classList.remove("hidden");
-            
+
             const player = document.getElementById("output-video-player");
             player.src = videoUrl;
             player.load();
-            
+
             const outputName = document.getElementById("output-name").value;
-            
+
             // Set download endpoints links
             document.getElementById("btn-download").href = videoUrl;
             document.getElementById("btn-download-srt").href = `/api/download-subs?filename=${outputName}&format=srt`;
@@ -1604,11 +1611,11 @@
             const text = textarea.value.trim();
             const charCount = text.length;
             const duration = endTime - startTime;
-            
+
             const wordCount = text ? text.split(/\s+/).length : 0;
             const durationMin = duration / 60.0;
             const wpm = durationMin > 0 ? Math.round(wordCount / durationMin) : 0;
-            
+
             // Estimated TTS duration
             const estDuration = (wordCount / 150) * 60; // avg 150 WPM
             const durationDiff = estDuration - duration;
@@ -1618,7 +1625,7 @@
             } else if (durationDiff > 0) {
                 durationTag = `<span style="color:#f59e0b;font-size:10px;">⏱ +${durationDiff.toFixed(1)}s tight</span>`;
             }
-            
+
             let badgeText = "Comfortable";
             let badgeColor = "#10b981";
             if (wpm > 170) {
@@ -1686,40 +1693,40 @@
         document.getElementById("btn-reset-config").addEventListener("click", () => {
             document.getElementById("transcription-model").value = "gemini-3.1-flash-lite";
             document.getElementById("target-language").value = "English";
-            
+
             const ttsEngine = document.getElementById("tts-engine");
             ttsEngine.value = "edge-tts";
             ttsEngine.dispatchEvent(new Event("change"));
-            
+
             document.getElementById("dubbing-mode").value = "duck";
             document.getElementById("dubbing-mode").dispatchEvent(new Event("change"));
-            
+
             document.getElementById("duck-level").value = "-20";
             document.getElementById("duck-level-value").innerText = "-20 dB";
-            
+
             document.getElementById("tts-volume").value = "0";
             document.getElementById("tts-volume-val").innerText = "0 dB";
             document.getElementById("bg-volume").value = "0";
             document.getElementById("bg-volume-val").innerText = "0 dB";
-            
+
             document.getElementById("eq-low").value = "0";
             document.getElementById("eq-low-val").innerText = "0 dB";
             document.getElementById("eq-mid").value = "0";
             document.getElementById("eq-mid-val").innerText = "0 dB";
             document.getElementById("eq-high").value = "0";
             document.getElementById("eq-high-val").innerText = "0 dB";
-            
+
             document.getElementById("noise-gate").value = "-45";
             document.getElementById("noise-gate-val").innerText = "-45 dBFS";
-            
+
             document.getElementById("chk-use-cache").checked = true;
             document.getElementById("chk-burn-subs").checked = false;
             document.getElementById("chk-waveform").checked = false;
-            
+
             const compress = document.getElementById("chk-compress");
             compress.checked = false;
             compress.dispatchEvent(new Event("change"));
-            
+
             document.getElementById("crf-slider").value = "24";
             document.getElementById("crf-val").innerText = "24";
         });
@@ -1842,7 +1849,7 @@
             rose: { purple: "#f43f5e", indigo: "#be123c", glow: "rgba(244, 63, 94, 0.25)" },
             amber: { purple: "#f59e0b", indigo: "#d97706", glow: "rgba(245, 158, 11, 0.25)" }
         };
-        
+
         document.getElementById("accent-color-select").addEventListener("change", (e) => {
             const colors = accentColors[e.target.value];
             if (colors) {
@@ -1986,7 +1993,7 @@
             localStorage.setItem("dubber_draft_time", new Date().toLocaleString());
             console.log("[Auto-save] Draft saved.");
         }
-        
+
         document.getElementById("btn-auto-save").addEventListener("click", () => {
             saveDraft();
             alert("Draft saved to browser storage!");
