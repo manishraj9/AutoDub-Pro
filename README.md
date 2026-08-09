@@ -187,4 +187,16 @@ Run the full integration test:
 ```powershell
 python run_integration.py
 ```
+---
 
+## 👨‍💻 Author
+
+**Manish Raj**
+
+Computer Science & Engineering 
+
+GitHub: [@manishraj9](https://github.com/manishraj9)
+
+---
+
+⭐ If you find AutoDub-Pro useful, consider giving the repository a star!
