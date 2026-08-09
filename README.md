@@ -12,7 +12,15 @@
 > ## 🚀 Live Demo
 
 👉 **[Try AutoDub-Pro Live](https://autodub-pro.onrender.com/)**
+### Application Demo
+[Watch the full demo video](https://drive.google.com/file/d/1JzOqQCjGlJpLKTsGKY-kWxoa8x9ZUy1S/view?usp=sharing)
 
+[▶️ Watch Original YouTube Video](https://www.youtube.com/watch?v=jNQXAC9IVRw)
+
+### AutoDub-Pro Output
+The same video processed through AutoDub-Pro:
+
+[▶️ Watch Dubbed/Converted Video](https://drive.google.com/file/d/1vZDQ7syjntWzH4rOQDBZId-8S_MBQHtp/view?usp=sharing)
 ---
 
 
