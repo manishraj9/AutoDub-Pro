@@ -1,4 +1,4 @@
-﻿yt-dlp>=2025.01.15
+﻿yt-dlp>=2025.05.22
 google-genai>=0.1.1
 edge-tts>=7.2.8
 pydub>=0.25.1
